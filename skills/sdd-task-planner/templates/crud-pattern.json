@@ -1,0 +1,41 @@
+[
+    {
+        "title": "Create {{ resource }}",
+        "description": "Implement the API endpoint to create a new {{ resource }}.",
+        "type": "backend",
+        "acceptance_criteria": [
+            "Endpoint accepts valid payload",
+            "Returns 201 Created on success",
+            "Returns 400 on validation error"
+        ]
+    },
+    {
+        "title": "Read {{ resource }}",
+        "description": "Implement the API endpoint to retrieve a {{ resource }} by ID.",
+        "type": "backend",
+        "acceptance_criteria": [
+            "Returns 200 OK with resource data",
+            "Returns 404 Not Found if id does not exist"
+        ]
+    },
+    {
+        "title": "Update {{ resource }}",
+        "description": "Implement the API endpoint to update an existing {{ resource }}.",
+        "type": "backend",
+        "acceptance_criteria": [
+            "Updates specified fields",
+            "Returns 200 OK on success",
+            "Returns 404 if not found"
+        ]
+    },
+    {
+        "title": "Delete {{ resource }}",
+        "description": "Implement the API endpoint to delete a {{ resource }}.",
+        "type": "backend",
+        "acceptance_criteria": [
+            "Deletes the resource",
+            "Returns 204 No Content on success",
+            "Returns 404 if not found"
+        ]
+    }
+]

@@ -1,0 +1,46 @@
+{
+    "tasks": [
+        {
+            "id": "TASK-001",
+            "title": "Setup Project Structure",
+            "description": "Initialize FastAPI project and directory structure.",
+            "status": "done"
+        },
+        {
+            "id": "TASK-002",
+            "title": "Implement Todo Model",
+            "description": "Create Pydantic models and SQLAlchemy entity.",
+            "status": "todo",
+            "dependencies": [
+                "TASK-001"
+            ]
+        },
+        {
+            "id": "TASK-003",
+            "title": "Implement Todo Repository",
+            "description": "Create CRUD operations in repository.",
+            "status": "todo",
+            "dependencies": [
+                "TASK-002"
+            ]
+        },
+        {
+            "id": "TASK-004",
+            "title": "Implement Todo Service",
+            "description": "Implement business logic in service layer.",
+            "status": "todo",
+            "dependencies": [
+                "TASK-003"
+            ]
+        },
+        {
+            "id": "TASK-005",
+            "title": "Implement Todo Controller",
+            "description": "Create API endpoints.",
+            "status": "todo",
+            "dependencies": [
+                "TASK-004"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "tasks": [
+        {
+            "id": "{{ task_id }}",
+            "title": "{{ title }}",
+            "description": "{{ description }}",
+            "status": "todo",
+            "dependencies": [],
+            "files": []
+        }
+    ]
+}

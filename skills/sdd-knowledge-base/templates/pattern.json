@@ -1,0 +1,16 @@
+{
+    "id": "{{ pattern_id }}",
+    "name": "{{ pattern_name }}",
+    "category": "{{ category }}",
+    "problem": "Describe the problem this pattern solves.",
+    "solution": "Describe the solution approach.",
+    "implementation": {
+        "steps": [],
+        "code_snippets": []
+    },
+    "consequences": {
+        "benefits": [],
+        "drawbacks": []
+    },
+    "related_patterns": []
+}

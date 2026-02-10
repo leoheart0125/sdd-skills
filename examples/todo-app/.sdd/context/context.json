@@ -1,0 +1,11 @@
+{
+    "project_name": "Todo App",
+    "description": "A simple Todo Application to demonstrate SDD workflow.",
+    "tech_stack": {
+        "language": "Python",
+        "framework": "FastAPI",
+        "database": "SQLite"
+    },
+    "architecture_style": "Layered Architecture",
+    "version": "1.0.0"
+}

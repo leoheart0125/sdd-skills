@@ -1,0 +1,14 @@
+{
+    "project_name": "{{ project_name }}",
+    "description": "{{ description }}",
+    "domain": "{{ domain }}",
+    "tech_stack": {
+        "language": "{{ language }}",
+        "framework": "{{ framework }}",
+        "database": "{{ database }}"
+    },
+    "architecture_style": "{{ architecture_style }}",
+    "version": "0.1.0",
+    "created_at": "{{ timestamp }}",
+    "updated_at": "{{ timestamp }}"
+}

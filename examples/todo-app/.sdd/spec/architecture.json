@@ -1,0 +1,42 @@
+{
+    "architecture_style": "Layered",
+    "components": [
+        {
+            "name": "TodoController",
+            "type": "Controller",
+            "description": "Handles HTTP requests and responses."
+        },
+        {
+            "name": "TodoService",
+            "type": "Service",
+            "description": "Contains business logic."
+        },
+        {
+            "name": "TodoRepository",
+            "type": "Repository",
+            "description": "Handles data storage in SQLite."
+        },
+        {
+            "name": "TodoModel",
+            "type": "Entity",
+            "description": "Data model for Todo Item."
+        }
+    ],
+    "data_flow": [
+        {
+            "source": "Client",
+            "destination": "TodoController",
+            "description": "HTTP Request"
+        },
+        {
+            "source": "TodoController",
+            "destination": "TodoService",
+            "description": "Function Call"
+        },
+        {
+            "source": "TodoService",
+            "destination": "TodoRepository",
+            "description": "Function Call"
+        }
+    ]
+}

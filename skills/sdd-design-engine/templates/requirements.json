@@ -1,0 +1,26 @@
+{
+    "project_name": "{{ project_name }}",
+    "version": "1.0",
+    "requirements": {
+        "functional": [
+            {
+                "id": "REQ-001",
+                "description": "The system shall...",
+                "priority": "High"
+            }
+        ],
+        "non_functional": [
+            {
+                "id": "NFR-001",
+                "description": "The system must respond within...",
+                "type": "Performance"
+            }
+        ],
+        "constraints": [
+            {
+                "id": "CON-001",
+                "description": "Must use PostgreSQL."
+            }
+        ]
+    }
+}

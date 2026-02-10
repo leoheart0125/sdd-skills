@@ -1,0 +1,50 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "project_name": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "requirements": {
+            "type": "object",
+            "properties": {
+                "functional": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string"
+                            },
+                            "priority": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "description"
+                        ]
+                    }
+                },
+                "non_functional": {
+                    "type": "array"
+                },
+                "constraints": {
+                    "type": "array"
+                }
+            },
+            "required": [
+                "functional"
+            ]
+        }
+    },
+    "required": [
+        "requirements"
+    ]
+}
