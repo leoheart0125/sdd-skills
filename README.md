@@ -4,9 +4,10 @@ A next-generation Spec-Driven Development (SDD) framework designed for **Compoun
 
 ## Core Philosophy
 
-1.  **Compounding**: Every feature built should make the next one faster via reusable patterns and templates.
+1.  **Compounding**: Every feature built should make the next one faster via reusable patterns (tagged for cross-feature retrieval) and lessons learned.
 2.  **Frictionless**: Automate state management. No "commit" commands. The system saves as you go.
-3.  **Guardrails**: Continuous validation running *inside* every stage, not just as a final gate.
+3.  **Guardrails**: Continuous validation running *inside* every stage, not just as a final gate. Programmatic enforcement of `project_rules.md`.
+4.  **Clarity First**: Ambiguity Resolution Protocol ensures the agent asks questions before proceeding on assumptions.
 
 ## Quick Start
 
@@ -23,7 +24,7 @@ cp -r ./skills/* .agent/skills/
 ```bash
 /sdd-init
 ```
-Sets up the `.sdd/` directory structure and default configuration.
+Sets up the `.sdd/` directory structure (including `knowledge/patterns/`, `knowledge/lessons/`, `features/`) and default configuration.
 
 ### 3. Workflow
 
@@ -31,30 +32,37 @@ Sets up the `.sdd/` directory structure and default configuration.
 ```bash
 /sdd-design
 ```
-Analyzes your requirements, generates architecture diagrams, and defines the API spec.
+Analyzes your requirements with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, and defines the API spec. All artifacts scoped to the active feature.
 *Shortcuts:* `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-api`
 
 **Phase 2: Plan**
 ```bash
 /sdd-plan
 ```
-Generates an implementation plan with concrete tasks, leveraging past patterns.
+Reads `project_rules.md` first, then generates an implementation plan with concrete tasks (including `target_path` per task). Validates file placement against architecture conventions.
 
 **Phase 3: Implement**
 ```bash
 /sdd-impl-start <TASK-ID>
 ```
-Scaffolds code from templates and starts the implementation.
+Scaffolds code from templates (matched by tags) at the task's `target_path`.
 
 ```bash
 /sdd-impl-finish
 ```
-Marks the task as complete and triggers final verification.
+Marks the task as complete, triggers final verification, and **mandatorily extracts patterns and lessons** for the knowledge base.
 
 ```bash
 /sdd-impl-fix
 ```
 Request a fix if guardrails fail.
+
+**Knowledge Commands**
+```bash
+/sdd-learn "lesson description"        # Record a lesson learned
+/sdd-pattern-save "pattern name"       # Save a reusable pattern
+/sdd-rule-update "proposed rule"       # Propose a project rule update
+```
 
 ## Storage Structure
 
@@ -63,12 +71,17 @@ All SDD artifacts are stored in the `.sdd/` directory. **Do not edit these manua
 ```
 .sdd/
 ├── context/              # Global Project Context & Rules
-├── spec/                 # Requirements, Architecture, and API Specs
-├── plan/                 # Task Lists & Implementation Plans
-├── data/                 # Raw Data Store
+│   ├── context.json      # State: tech_stack, current_feature, stage, patterns, lessons
+│   └── project_rules.md  # Architecture rules, coding standards, conventions
+├── spec/                 # Feature-Scoped Specifications
+│   └── <feature-id>/    # requirements.json, architecture.json, openapi.yaml, concerns.json
+├── plan/                 # Feature-Scoped Implementation Plans
+│   └── <feature-id>/    # tasks.json (with target_path per task)
+├── features/             # Archived Snapshots (spec+plan per completed feature)
 ├── knowledge/            # The "Learning" Layer
-│   ├── patterns/         # Reusable Design/Code Patterns
-│   └── lessons/          # Avoidance Rules
+│   ├── patterns/         # Reusable Design/Code Patterns (tagged)
+│   └── lessons/          # Avoidance Rules (event-driven)
+├── data/                 # Raw Data Store
 └── logs/                 # Operational Logs
 ```
 
@@ -76,12 +89,12 @@ All SDD artifacts are stored in the `.sdd/` directory. **Do not edit these manua
 
 | Skill | Role | Description |
 |-------|------|-------------|
-| [sdd-system](./sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization, and global status. |
-| [sdd-design-engine](./sdd-design-engine/SKILL.md) | **Architect** | Unifies Requirements -> Systems -> API design into a single, fluid flow. |
-| [sdd-knowledge-base](./sdd-knowledge-base/SKILL.md) | **Brain** | The central store for State, Design Patterns, and Lessons Learned. |
-| [sdd-guardrails](./sdd-guardrails/SKILL.md) | **Safety** | Continuous validation checks embedded in other skills (design & implementation). |
-| [sdd-task-planner](./sdd-task-planner/SKILL.md) | **Planner** | Generates implementation plans by matching new requests against past tasks. |
-| [sdd-implementer](./sdd-implementer/SKILL.md) | **Builder** | Scaffolds code from templates and handles the feedback loop to specs. |
+| [sdd-system](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization, feature management, and global status. |
+| [sdd-design-engine](./skills/sdd-design-engine/SKILL.md) | **Architect** | Unifies Requirements -> Architecture -> API design with Ambiguity Resolution Protocol. |
+| [sdd-knowledge-base](./skills/sdd-knowledge-base/SKILL.md) | **Brain** | Central store for State, Design Patterns (tag-based), Lessons Learned (event-driven). |
+| [sdd-guardrails](./skills/sdd-guardrails/SKILL.md) | **Safety** | Continuous validation with programmatic rule enforcement at design, plan, and implementation stages. |
+| [sdd-task-planner](./skills/sdd-task-planner/SKILL.md) | **Planner** | Generates implementation plans with rule-aware `target_path` validation and pattern matching by tags. |
+| [sdd-implementer](./skills/sdd-implementer/SKILL.md) | **Builder** | Scaffolds code from templates, enforces mandatory knowledge extraction on feature completion. |
 
 ## License
 

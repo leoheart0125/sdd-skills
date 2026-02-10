@@ -5,6 +5,7 @@
             "title": "{{ title }}",
             "description": "{{ description }}",
             "status": "todo",
+            "target_path": "{{ target_path }}",
             "dependencies": [],
             "files": []
         }

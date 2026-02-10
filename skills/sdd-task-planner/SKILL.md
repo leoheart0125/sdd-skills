@@ -1,6 +1,6 @@
 ---
 name: sdd-task-planner
-description: "Intelligent planning engine that uses historical patterns to generate implementation tasks."
+description: "Intelligent planning engine that uses historical patterns and project rules to generate implementation tasks."
 dependencies:
   - sdd-design-engine
   - sdd-knowledge-base
@@ -8,41 +8,87 @@ dependencies:
 
 # SDD Task Planner
 
-This skill transforms specifications into actionable plans, but unlike a simple generator, it **learns**. It checks the Knowledge Base for similar past features to reuse successful plans.
+This skill transforms specifications into actionable plans, but unlike a simple generator, it **learns** and **enforces rules**. It checks the Knowledge Base for similar past features, reads `project_rules.md` for architectural constraints, and applies clarification when needed.
 
 ## Core Responsibilities
 
-1.  **Pattern Matching**: Query `sdd-knowledge-base` for tasks similar to the current feature.
-2.  **Smart Generation**: If a pattern exists, hydrate it. If not, generate new tasks from `openapi.yaml`.
-3.  **Optimization**: Order tasks to minimize context switching (e.g., group all DB tasks, then all API tasks).
+1.  **Rule-Aware Planning**: Read `project_rules.md` **first** — especially Architecture and Coding Standards — before generating any task.
+2.  **Pattern Matching**: Query `sdd-knowledge-base` for tasks similar to the current feature (by tags).
+3.  **Smart Generation**: If a pattern exists, hydrate it. If not, generate new tasks from spec artifacts.
+4.  **Path Validation**: Every task must include a `target_path` that conforms to the architecture conventions defined in `project_rules.md`.
+5.  **Optimization**: Order tasks to minimize context switching.
 
 ## Commands
 
 -   `/sdd-plan`: Generate or update the implementation plan (`tasks.json`).
 -   `/sdd-plan-optimize`: Re-sort tasks based on dependencies and developer availability.
 
-## Pattern Logic
+## Planning Logic
 
 When `/sdd-plan` is called:
-1.  Analyze `context.json` (Feature Name/Description).
-2.  Search `knowledge/patterns/` for matches (e.g., "Feature: CRUD API").
-3.  **If Match Found**:
+
+### Step 1: Read Project Rules (MANDATORY FIRST STEP)
+1.  Load `project_rules.md` from `.sdd/context/`.
+2.  Extract architecture conventions (e.g., Screaming Architecture → `src/<feature>/domain/`, `src/<feature>/application/`).
+3.  Extract coding standards and naming conventions.
+4.  These rules constrain all subsequent task generation.
+
+### Step 2: Analyze Feature Context
+1.  Read `context.json` — get `current_feature`, `architecture_style`, `project_structure_convention`.
+2.  Read spec from `.sdd/spec/<feature-id>/`.
+3.  Search `knowledge/patterns/` for matches by **tags** (e.g., `crud`, `auth`).
+
+### Step 3: Pre-Plan Clarification
+Before generating tasks, check for concerns:
+- "This feature requires a new DB migration. Which task should handle it?"
+- "Found a similar pattern `crud-api` (tags: crud, rest). Apply it or customize?"
+- "Spec item REQ-003 still has open clarifications. Resolve via `/sdd-design` first?"
+
+Present BLOCKING concerns to user and wait. Skip if no concerns.
+
+### Step 4: Generate Tasks
+-   **If Pattern Match Found**:
     -   Load Pattern Task List.
-    -   Replace placeholders (e.g., `{{Entity}}` -> `User`).
+    -   Replace placeholders (e.g., `{{Entity}}` → `User`).
+    -   Adjust `target_path` to match `project_rules.md` conventions.
     -   Output `tasks.json`.
-4.  **If No Match**:
-    -   Parse `openapi.yaml`.
+-   **If No Match**:
+    -   Parse spec artifacts (`openapi.yaml`, `architecture.json`).
     -   Identify Endpoints, Models, Services.
+    -   Generate `target_path` for each task based on project rules.
     -   Generate fresh `tasks.json`.
+
+### Step 5: Guardrail Validation
+After generating tasks, invoke `sdd-guardrails` with context `"plan"`:
+-   **Path Convention Check**: Verify each task's `target_path` matches the architecture style.
+    -   Example: Screaming Architecture → `src/users/domain/user.ts` ✅, `src/domain/user.ts` ❌
+-   **Rule Compliance**: Ensure task descriptions don't contradict `project_rules.md`.
+-   If violations found → fix tasks → re-validate.
+
+### Step 6: Finalize
+1.  Write `tasks.json` to `.sdd/plan/<feature-id>/tasks.json`.
+2.  Update `context.json.current_stage` to `"plan-complete"`.
 
 ## Output
 
-Generates `.sdd/tasks/tasks.json` containing:
+Generates `.sdd/plan/<feature-id>/tasks.json` containing:
 -   **Task Groups**: Logical grouping of tasks.
 -   **Dependencies**: Explicit blocking relationships.
+-   **Target Paths**: Expected file paths for each task's output.
 -   **Estimated Effort**: Based on historical data from similar patterns.
+
+## When to Record a Lesson
+
+If the user **adjusts** the generated plan (changes task granularity, reorders tasks, rejects a pattern match), trigger `/sdd-learn`:
+```json
+{
+    "trigger": "planning-tasks",
+    "advice": "This project prefers one task per commit. Keep granularity at single-responsibility level."
+}
+```
 
 ## Integration
 
--   **Input**: `context.json`, `openapi.yaml`, `sdd-knowledge-base`.
--   **Output**: `tasks.json` (consumed by `sdd-implementer`).
+-   **Input**: `context.json`, `project_rules.md`, `.sdd/spec/<feature-id>/*`, `sdd-knowledge-base`.
+-   **Output**: `.sdd/plan/<feature-id>/tasks.json` (consumed by `sdd-implementer`).
+-   **Invokes**: `sdd-guardrails` (plan-level checks).

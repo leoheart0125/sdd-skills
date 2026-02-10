@@ -24,6 +24,39 @@
                             },
                             "priority": {
                                 "type": "string"
+                            },
+                            "confidence_score": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1,
+                                "description": "Agent confidence in this requirement (0.0-1.0). Below threshold triggers clarification."
+                            },
+                            "clarifications": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "question": {
+                                            "type": "string"
+                                        },
+                                        "category": {
+                                            "type": "string",
+                                            "enum": [
+                                                "BLOCKING",
+                                                "WARNING",
+                                                "INFO"
+                                            ]
+                                        },
+                                        "answer": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "question",
+                                        "category"
+                                    ]
+                                },
+                                "description": "Clarification Q&A history for this requirement"
                             }
                         },
                         "required": [

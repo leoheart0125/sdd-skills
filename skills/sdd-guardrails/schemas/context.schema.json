@@ -31,12 +31,62 @@
         "architecture_style": {
             "type": "string"
         },
+        "project_structure_convention": {
+            "type": "string",
+            "description": "Directory structure rules, e.g. screaming architecture conventions"
+        },
         "version": {
             "type": "string"
+        },
+        "current_stage": {
+            "type": "string",
+            "enum": [
+                "init",
+                "design",
+                "design-complete",
+                "plan",
+                "plan-complete",
+                "impl",
+                "impl-complete"
+            ],
+            "description": "Current lifecycle stage of the active feature"
+        },
+        "current_feature": {
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "description": "Active feature name/ID currently being worked on"
+        },
+        "completed_features": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "History of completed feature IDs"
+        },
+        "active_patterns": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Pattern IDs actively applied to current work"
+        },
+        "applied_lessons": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "Lesson IDs consulted for current work"
         }
     },
     "required": [
         "project_name",
-        "tech_stack"
+        "tech_stack",
+        "current_stage"
     ]
 }

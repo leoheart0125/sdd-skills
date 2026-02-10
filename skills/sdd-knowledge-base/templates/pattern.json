@@ -2,6 +2,7 @@
     "id": "{{ pattern_id }}",
     "name": "{{ pattern_name }}",
     "category": "{{ category }}",
+    "tags": [],
     "problem": "Describe the problem this pattern solves.",
     "solution": "Describe the solution approach.",
     "implementation": {

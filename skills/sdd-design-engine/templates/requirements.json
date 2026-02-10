@@ -6,7 +6,9 @@
             {
                 "id": "REQ-001",
                 "description": "The system shall...",
-                "priority": "High"
+                "priority": "High",
+                "confidence_score": 1.0,
+                "clarifications": []
             }
         ],
         "non_functional": [

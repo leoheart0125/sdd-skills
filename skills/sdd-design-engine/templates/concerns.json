@@ -1,0 +1,14 @@
+{
+    "feature": "{{ feature_name }}",
+    "stage": "{{ stage }}",
+    "concerns": [
+        {
+            "id": "C-001",
+            "category": "BLOCKING",
+            "question": "{{ question }}",
+            "context": "{{ why this matters }}",
+            "answer": null,
+            "resolved": false
+        }
+    ]
+}

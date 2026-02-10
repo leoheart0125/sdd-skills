@@ -26,6 +26,10 @@
                             "verified"
                         ]
                     },
+                    "target_path": {
+                        "type": "string",
+                        "description": "Expected file path for this task's output, validated against project_rules architecture conventions"
+                    },
                     "dependencies": {
                         "type": "array",
                         "items": {

@@ -14,10 +14,13 @@ echo "Initializing SDD environment in $SDD_ROOT..."
 directories=(
     "$SDD_ROOT/spec"
     "$SDD_ROOT/plan"
+    "$SDD_ROOT/features"
     "$SDD_ROOT/context"
     "$SDD_ROOT/data"
     "$SDD_ROOT/logs"
     "$SDD_ROOT/temp"
+    "$SDD_ROOT/knowledge/patterns"
+    "$SDD_ROOT/knowledge/lessons"
 )
 
 for dir in "${directories[@]}"; do

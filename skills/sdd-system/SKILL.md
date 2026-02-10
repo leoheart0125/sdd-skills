@@ -7,29 +7,69 @@ dependencies:
 
 # SDD System
 
-This skill is the entry point for the Compounding Engineering framework. It handles initialization and global status, leaving value creation to the specialized engines.
+This skill is the entry point for the Compounding Engineering framework. It handles initialization, feature lifecycle management, and global status.
 
 ## Core Responsibilities
 
-1.  **Project Initialization**: Setup `project_rules.md` and Knowledge Base.
-2.  **Global Status**: Display the "Big Picture" (Current Stage + Active Feature + Velocity).
-3.  **Coordination**: Ensure other skills (Design, Guardrails, Planner) are installed and healthy.
+1.  **Project Initialization**: Setup `.sdd/` directory, `project_rules.md`, and Knowledge Base directories.
+2.  **Feature Lifecycle**: Manage features from creation through design → plan → impl → complete → learn.
+3.  **Global Status**: Display the "Big Picture" (Current Stage + Active Feature + Velocity + Knowledge Stats).
+4.  **Coordination**: Ensure other skills (Design, Guardrails, Planner) are installed and healthy.
 
 ## Commands
 
 -   `/sdd-init`: Initialize a new Compounding Engineering project.
--   `/sdd-status`: Display current project health, active stage, and recent lessons learned.
--   `/sdd-nuke`: (Dangerous) Reset internal state but keep learned patterns.
+-   `/sdd-status`: Display current project health, active stage, active feature, and recent lessons learned.
+-   `/sdd-nuke`: (Dangerous) Reset internal state but keep learned patterns and lessons.
 
 ## Initialization Logic
 
 When `/sdd-init` is called:
 1.  Check for `.sdd/` directory.
-2.  If missing, create headers for `knowledge/patterns/` and `knowledge/lessons/`.
-3.  Generate initial `project_rules.md` template.
-4.  Report: "Project initialized. Ready for `/sdd-design`."
+2.  Create full directory structure:
+    - `context/` — `context.json`, `project_rules.md`
+    - `spec/` — Feature-scoped spec subdirectories
+    - `plan/` — Feature-scoped plan subdirectories
+    - `features/` — Feature snapshot archive (spec + plan per feature)
+    - `knowledge/patterns/` — Reusable design/code patterns
+    - `knowledge/lessons/` — Lessons learned from past work
+    - `data/`, `logs/`, `temp/`
+3.  Generate initial `context.json` from template (includes `current_stage`, `current_feature`, etc.).
+4.  Generate initial `project_rules.md` template.
+5.  Report: "Project initialized. Ready for `/sdd-design`."
+
+## Feature Lifecycle
+
+Each feature follows this lifecycle, tracked via `context.json.current_stage`:
+
+```
+init → design → design-complete → plan → plan-complete → impl → impl-complete
+```
+
+### Starting a Feature
+1.  User provides feature name/intent.
+2.  Set `context.json.current_feature` to the feature ID (e.g., `user-auth`).
+3.  Create directory: `.sdd/spec/<feature-id>/` and `.sdd/plan/<feature-id>/`.
+4.  Set `context.json.current_stage` to `"design"`.
+
+### Completing a Feature
+1.  All tasks in `tasks.json` reach `"done"` or `"verified"` status.
+2.  `/sdd-impl-finish` triggers mandatory knowledge extraction.
+3.  Copy spec + plan snapshot to `.sdd/features/<feature-id>/`.
+4.  Move feature ID from `current_feature` to `completed_features`.
+5.  Reset `current_stage` to `"init"` and `current_feature` to `null`.
+
+## Status Display
+
+When `/sdd-status` is called, display:
+- **Active Feature**: `context.json.current_feature` (or "None")
+- **Current Stage**: `context.json.current_stage`
+- **Completed Features**: Count of `context.json.completed_features`
+- **Knowledge Stats**: Number of patterns in `knowledge/patterns/`, lessons in `knowledge/lessons/`
+- **Active Patterns**: `context.json.active_patterns`
+- **Applied Lessons**: `context.json.applied_lessons`
 
 ## Integration
 
--   **Consumes**: `sdd-knowledge-base` (for status).
--   **Directs**: Users to `/sdd-design` or `/sdd-plan` based on state.
+-   **Consumes**: `sdd-knowledge-base` (for status and knowledge stats).
+-   **Directs**: Users to `/sdd-design` or `/sdd-plan` based on `current_stage`.

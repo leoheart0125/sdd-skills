@@ -7,5 +7,13 @@
         "database": "SQLite"
     },
     "architecture_style": "Layered Architecture",
-    "version": "1.0.0"
+    "project_structure_convention": "src/<layer>/ (Layered Architecture)",
+    "version": "1.0.0",
+    "current_stage": "plan-complete",
+    "current_feature": null,
+    "completed_features": [
+        "todo-crud"
+    ],
+    "active_patterns": [],
+    "applied_lessons": []
 }
