@@ -54,10 +54,11 @@ init → design → design-complete → plan → plan-complete → impl → impl
 
 ### Completing a Feature
 1.  All tasks in `tasks.json` reach `"done"` or `"verified"` status.
-2.  `/sdd-impl-finish` triggers mandatory knowledge extraction.
-3.  Copy spec + plan snapshot to `.sdd/features/<feature-id>/`.
+2.  `/sdd-impl-finish` triggers mandatory knowledge extraction (reads `.sdd/logs/session.md` for cross-session history).
+3.  **MOVE** (not copy) `.sdd/spec/<feature-id>/` and `.sdd/plan/<feature-id>/` into `.sdd/features/<feature-id>/`.
 4.  Move feature ID from `current_feature` to `completed_features`.
 5.  Reset `current_stage` to `"init"` and `current_feature` to `null`.
+6.  Clear `.sdd/logs/session.md`.
 
 ## Status Display
 

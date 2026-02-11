@@ -33,12 +33,16 @@ When `/sdd-plan` is called:
 3.  Extract coding standards and naming conventions.
 4.  These rules constrain all subsequent task generation.
 
-### Step 2: Analyze Feature Context
+### Step 2: Knowledge Lookup (MANDATORY)
+1.  Search `.sdd/knowledge/patterns/` for entries whose tags match the current feature's domain (e.g., `crud`, `auth`).
+2.  Search `.sdd/knowledge/lessons/` for entries whose tags or triggers relate to planning or the current feature.
+3.  Summarize relevant findings — reuse proven strategies and avoid past mistakes.
+
+### Step 3: Analyze Feature Context
 1.  Read `context.json` — get `current_feature`, `architecture_style`, `project_structure_convention`.
 2.  Read spec from `.sdd/spec/<feature-id>/`.
-3.  Search `knowledge/patterns/` for matches by **tags** (e.g., `crud`, `auth`).
 
-### Step 3: Pre-Plan Clarification
+### Step 4: Pre-Plan Clarification
 Before generating tasks, check for concerns:
 - "This feature requires a new DB migration. Which task should handle it?"
 - "Found a similar pattern `crud-api` (tags: crud, rest). Apply it or customize?"
@@ -46,7 +50,7 @@ Before generating tasks, check for concerns:
 
 Present BLOCKING concerns to user and wait. Skip if no concerns.
 
-### Step 4: Generate Tasks
+### Step 5: Generate Tasks
 -   **If Pattern Match Found**:
     -   Load Pattern Task List.
     -   Replace placeholders (e.g., `{{Entity}}` → `User`).
@@ -58,14 +62,14 @@ Present BLOCKING concerns to user and wait. Skip if no concerns.
     -   Generate `target_path` for each task based on project rules.
     -   Generate fresh `tasks.json`.
 
-### Step 5: Guardrail Validation
+### Step 6: Guardrail Validation
 After generating tasks, invoke `sdd-guardrails` with context `"plan"`:
 -   **Path Convention Check**: Verify each task's `target_path` matches the architecture style.
     -   Example: Screaming Architecture → `src/users/domain/user.ts` ✅, `src/domain/user.ts` ❌
 -   **Rule Compliance**: Ensure task descriptions don't contradict `project_rules.md`.
 -   If violations found → fix tasks → re-validate.
 
-### Step 6: Finalize
+### Step 7: Finalize
 1.  Write `tasks.json` to `.sdd/plan/<feature-id>/tasks.json`.
 2.  Update `context.json.current_stage` to `"plan-complete"`.
 
@@ -77,15 +81,16 @@ Generates `.sdd/plan/<feature-id>/tasks.json` containing:
 -   **Target Paths**: Expected file paths for each task's output.
 -   **Estimated Effort**: Based on historical data from similar patterns.
 
-## When to Record a Lesson
+## Post-step: Feedback Capture (MANDATORY)
 
-If the user **adjusts** the generated plan (changes task granularity, reorders tasks, rejects a pattern match), trigger `/sdd-learn`:
-```json
-{
-    "trigger": "planning-tasks",
-    "advice": "This project prefers one task per commit. Keep granularity at single-responsibility level."
-}
-```
+After presenting the plan to the user, if the user adjusts the generated plan (changes task granularity, reorders tasks, rejects a pattern match):
+1.  Apply the requested changes to `tasks.json`.
+2.  **Immediately** write a lesson to `.sdd/knowledge/lessons/` capturing:
+    -   What was originally planned vs what the user changed.
+    -   Why the adjustment was needed.
+    -   Tags for future retrieval (feature name, `planning-tasks`, domain keywords).
+
+This is NOT optional. Every user adjustment to the plan MUST be recorded as a lesson.
 
 ## Integration
 

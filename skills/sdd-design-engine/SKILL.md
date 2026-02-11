@@ -97,10 +97,25 @@ After analyzing user intent or input artifacts, the agent assigns a **confidence
 4.  Re-run analysis. If new concerns arise, repeat.
 5.  Proceed to the next sub-stage only when all BLOCKING items are resolved.
 
-### When to Record a Lesson
-If the user **corrects** the agent's output during clarification (e.g., rejects a requirement, changes an assumption), this is a gap between expectation and reality. The agent should trigger `/sdd-learn` to record the correction as a lesson.
+### Post-step: Feedback Capture (MANDATORY)
+After presenting any design artifact to the user, if the user requests changes or corrections:
+1.  Apply the requested changes to the design artifact.
+2.  **Immediately** write a lesson to `.sdd/knowledge/lessons/` capturing:
+    -   What was originally generated vs what the user corrected.
+    -   Why the correction was needed (infer from context or ask the user).
+    -   Tags for future retrieval (feature name, design stage, domain keywords).
+3.  If the correction reveals a reusable pattern (e.g., a preferred architectural style, a standard API convention), also save to `.sdd/knowledge/patterns/`.
+
+This is NOT optional. Every user correction during design is a gap between expectation and reality — it MUST be recorded as a lesson.
 
 ## Design Pipeline
+
+### Pre-step: Knowledge Lookup (MANDATORY)
+Before generating **any** design artifact (requirements, architecture, or API), the engine MUST:
+1.  Search `.sdd/knowledge/patterns/` for entries whose tags relate to the current feature.
+2.  Search `.sdd/knowledge/lessons/` for entries whose tags or triggers relate to the current feature.
+3.  Summarize relevant findings and incorporate them into the design output.
+4.  If no relevant knowledge is found, proceed normally.
 
 ### 1. Requirements (formerly `sdd-requirements-engine`)
 -   **Input**: User conversation / Intent.

@@ -104,6 +104,7 @@ The source of truth for the *current* project state.
 ```
 
 **b) After implementation (`/sdd-impl-finish`):**
+-   Read `.sdd/logs/session.md` for the full cross-session implementation history (this is the primary source for lesson extraction — without it, lessons from previous sessions are lost)
 -   Issues found and fixed during guardrail checks
 -   Root causes of spec drift
 -   Any "I wish I had known..." insights
@@ -127,6 +128,10 @@ Every guardrail fail → fix → pass cycle is a lesson.
 | **Surprise = Record** | Unexpected behavior from frameworks, DB, or third-party services |
 | **Repetition = Upgrade** | If the same lesson triggers twice, promote it to a `project_rule` via `/sdd-rule-update` |
 | **Don't record smooth sailing** | When everything works as expected, no lesson is needed — avoid noise |
+
+### Session Log as Cross-Session Memory
+
+During implementation, all events (task completions, user corrections, spec drift, guardrail failures) are appended to `.sdd/logs/session.md`. This file persists across agent sessions and is the primary input for knowledge extraction at `/sdd-impl-finish`. After extraction, the log is cleared.
 
 ### Event-Driven, Not Phase-Driven
 
