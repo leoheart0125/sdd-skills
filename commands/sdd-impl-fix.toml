@@ -1,0 +1,2 @@
+description = "Request a fix for a failed guardrail check."
+prompt = "Activate the 'sdd-implementer' skill and follow its instructions to fix the reported guardrail violations: {{args}}"

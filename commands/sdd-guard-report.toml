@@ -1,0 +1,2 @@
+description = "Generate a summary of active violations."
+prompt = "Activate the 'sdd-guardrails' skill and follow its instructions to generate a report of all current violations and drift."

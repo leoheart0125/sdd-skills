@@ -1,0 +1,2 @@
+description = "Adjust spec based on drift detected during implementation."
+prompt = "Activate the 'sdd-design-engine' skill and follow its instructions to update the specifications based on the following drift or insights: {{args}}"

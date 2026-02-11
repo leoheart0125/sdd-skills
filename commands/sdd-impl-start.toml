@@ -1,0 +1,2 @@
+description = "Load context and scaffold code for a task."
+prompt = "Activate the 'sdd-implementer' skill and follow its instructions to start implementing task: {{args}}"

@@ -1,0 +1,2 @@
+description = "Initialize a new Compounding Engineering project."
+prompt = "Activate the 'sdd-system' skill and follow its instructions to initialize the SDD environment and project structure based on: {{args}}"

@@ -1,0 +1,2 @@
+description = "Generate or update the implementation plan."
+prompt = "Activate the 'sdd-task-planner' skill and follow its instructions to generate or update the implementation plan (tasks.json) based on current specs: {{args}}"

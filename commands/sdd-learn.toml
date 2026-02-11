@@ -1,0 +1,2 @@
+description = "Extract a Lesson Learned."
+prompt = "Activate the 'sdd-knowledge-base' skill and follow its instructions to record a new lesson: {{args}}"

@@ -1,0 +1,2 @@
+description = "Run a specific set of checks for the given context."
+prompt = "Activate the 'sdd-guardrails' skill and follow its instructions to run checks for the following context (requirements|architecture|api|plan|code): {{args}}"

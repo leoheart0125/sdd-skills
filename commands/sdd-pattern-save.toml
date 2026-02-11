@@ -1,0 +1,2 @@
+description = "Save a reusable pattern."
+prompt = "Activate the 'sdd-knowledge-base' skill and follow its instructions to save a reusable design or code pattern: {{args}}"

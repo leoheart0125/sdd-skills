@@ -1,0 +1,2 @@
+description = "Mark task complete and enforce knowledge extraction."
+prompt = "Activate the 'sdd-implementer' skill and follow its instructions to finish the current task, verify results, and extract knowledge: {{args}}"

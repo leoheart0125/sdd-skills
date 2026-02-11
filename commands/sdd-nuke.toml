@@ -1,0 +1,2 @@
+description = "Reset internal state but keep learned knowledge."
+prompt = "Activate the 'sdd-system' skill and follow its instructions to reset the project internal state (NUKE) for the following reason: {{args}}"

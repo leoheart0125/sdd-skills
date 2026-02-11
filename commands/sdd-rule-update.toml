@@ -1,0 +1,2 @@
+description = "Propose an update to project_rules.md."
+prompt = "Activate the 'sdd-knowledge-base' skill and follow its instructions to evolve the project rules based on: {{args}}"

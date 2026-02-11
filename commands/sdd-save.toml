@@ -1,0 +1,2 @@
+description = "Persist current context.json and state."
+prompt = "Activate the 'sdd-knowledge-base' skill and follow its instructions to save the current project state and context."

@@ -1,0 +1,2 @@
+description = "Compare codebase against specifications."
+prompt = "Activate the 'sdd-guardrails' skill and follow its instructions to detect drift between the implementation and specifications: {{args}}"

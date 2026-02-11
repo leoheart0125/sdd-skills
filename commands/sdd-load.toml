@@ -1,0 +1,2 @@
+description = "Restore context from disk."
+prompt = "Activate the 'sdd-knowledge-base' skill and follow its instructions to load the project context from disk."

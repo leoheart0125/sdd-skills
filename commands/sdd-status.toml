@@ -1,0 +1,2 @@
+description = "Display current project health and active stage."
+prompt = "Activate the 'sdd-system' skill and follow its instructions to display the current project status, active feature, and knowledge statistics."
