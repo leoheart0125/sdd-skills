@@ -1,2 +1,7 @@
 description = "Request a fix for a failed guardrail check."
-prompt = "Activate the 'sdd-implementer' skill and follow its instructions to fix the reported guardrail violations: {{args}}"
+prompt = """Read the orchestration rules in AGENT.md. Delegate to the Implement Agent (agents/implement-agent.md) using the Task tool.
+
+Command: /sdd-impl-fix
+Violation details: {{args}}
+
+Before delegating, read .sdd/context/context.json for current state. Pass the violation details to the Implement Agent."""

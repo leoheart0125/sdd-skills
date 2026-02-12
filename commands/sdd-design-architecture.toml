@@ -1,2 +1,7 @@
 description = "Force entry into Architecture Design."
-prompt = "Activate the 'sdd-design-engine' skill and follow its instructions to perform Architecture Design for the feature: {{args}}"
+prompt = """Read the orchestration rules in AGENT.md. Delegate to the Design Agent (agents/design-agent.md) using the Task tool.
+
+Command: /sdd-design-architecture
+User args: {{args}}
+
+Before delegating, read .sdd/context/context.json for current state. Tell the Design Agent to force-start Architecture Design regardless of current sub-stage."""

@@ -1,2 +1,7 @@
 description = "Generate or update the implementation plan."
-prompt = "Activate the 'sdd-task-planner' skill and follow its instructions to generate or update the implementation plan (tasks.json) based on current specs: {{args}}"
+prompt = """Read the orchestration rules in AGENT.md. Delegate to the Plan Agent (agents/plan-agent.md) using the Task tool.
+
+Command: /sdd-plan
+User args: {{args}}
+
+Before delegating, read .sdd/context/context.json for current state. Pass spec directory path and all context to the Plan Agent."""

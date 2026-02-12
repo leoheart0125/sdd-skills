@@ -1,2 +1,7 @@
 description = "Force entry into Data/API Design."
-prompt = "Activate the 'sdd-design-engine' skill and follow its instructions to perform Data and API Design for the feature: {{args}}"
+prompt = """Read the orchestration rules in AGENT.md. Delegate to the Design Agent (agents/design-agent.md) using the Task tool.
+
+Command: /sdd-design-api
+User args: {{args}}
+
+Before delegating, read .sdd/context/context.json for current state. Tell the Design Agent to force-start Data/API Design regardless of current sub-stage."""
