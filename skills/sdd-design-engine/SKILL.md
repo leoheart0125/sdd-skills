@@ -95,11 +95,11 @@ After analyzing user intent or input artifacts, the agent assigns a **confidence
 | **INFO** | Informational, no action needed | Agent informs and proceeds |
 
 ### Step 3: Resolve and Iterate
-1.  Present all BLOCKING and WARNING concerns to the user.
-2.  Collect answers and record them in `concerns.json`.
-3.  Re-incorporate answers into the spec.
-4.  Re-run analysis. If new concerns arise, repeat.
-5.  Proceed to the next sub-stage only when all BLOCKING items are resolved.
+1.  **STOP and Ask User**: If ANY **BLOCKING** concerns exist, you **MUST** present them to the user and **WAIT** for their response. **DO NOT** proceed. **DO NOT** makeup answers.
+2.  **Collect Answers**: Record user answers in `concerns.json`.
+3.  **Re-incorporate**: Re-incorporate answers into the spec.
+4.  **Re-run Analysis**: If new concerns arise, repeat.
+5.  **Proceed**: Only proceed to the next sub-stage when **ALL** BLOCKING items are resolved.
 
 ### Post-step: Feedback Capture (MANDATORY)
 After presenting any design artifact to the user, if the user requests changes or corrections:

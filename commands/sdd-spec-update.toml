@@ -1,5 +1,5 @@
 description = "Adjust spec based on drift detected during implementation."
-prompt = """Read the orchestration rules in AGENT.md. Delegate to the Design Agent (agents/design-agent.md) using the Task tool.
+prompt = """Read the orchestration rules in AGENT.md. Delegate to the Design Agent (agents/design-agent.md) as per AGENT.md instructions.
 
 Command: /sdd-spec-update
 Drift description: {{args}}

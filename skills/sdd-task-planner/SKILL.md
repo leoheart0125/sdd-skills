@@ -50,7 +50,7 @@ Before generating tasks, check for concerns:
 - "Found a similar pattern `crud-api` (tags: crud, rest). Apply it or customize?"
 - "Spec item REQ-003 still has open clarifications. Resolve via `/sdd-design` first?"
 
-Present BLOCKING concerns to user and wait. Skip if no concerns.
+Present BLOCKING concerns to user and **STOP**. Wait for user resolution. Skip if no concerns.
 
 ### Step 5: Generate Tasks
 -   **If Pattern Match Found**:
@@ -72,7 +72,7 @@ After generating tasks, invoke `sdd-guardrails` with context `"plan"`:
 -   If violations found → fix tasks → re-validate.
 
 ### JSON Writing Rule
-When writing `tasks.json`, all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk. If validation fails, fix escaping issues before saving.
+When writing `tasks.json`, you **MUST use the file writing tools**. All string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk. If validation fails, fix escaping issues before saving.
 
 ### Step 7: Finalize
 1.  Write `tasks.json` to `.sdd/plan/<feature-id>/tasks.json`.

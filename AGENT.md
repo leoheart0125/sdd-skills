@@ -56,27 +56,14 @@ User ↔ Orchestrator (you) ↔ Subagents (via Task tool)
 
 ## How to Delegate
 
-When a command maps to a subagent, use the **Task tool** with `subagent_type: "general-purpose"`:
+When a command maps to a subagent, you must **delegate** the task to that agent.
 
-```
-Task tool:
-  prompt: |
-    <Read the agent prompt file at agents/<agent-name>.md>
+To delegate:
+1.  **Read the agent's prompt file** at `agents/<agent-name>.md`.
+2.  **Contextualize**: Gather the current working directory, feature, stage, command, and user args.
+3.  **Instruct**: Adopt the persona defined in the agent's prompt file.
+4.  **Execute**: Perform the task as that agent.
 
-    ## Context
-    - Working directory: <cwd>
-    - Feature: <context.json.current_feature>
-    - Stage: <context.json.current_stage>
-    - Command: <the slash command>
-    - User args: <any arguments>
-
-    ## Instructions
-    <paste the full content of agents/<agent>.md>
-
-    Begin.
-```
-
-**IMPORTANT**: Before delegating, always read `.sdd/context/context.json` to get current state. Pass the current feature ID and stage to the subagent.
 
 ## Handling Subagent Returns
 
