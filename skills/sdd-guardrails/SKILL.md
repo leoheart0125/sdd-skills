@@ -43,6 +43,12 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 -   **Test Coverage**: "Are tests generated for this task?"
 -   **File Placement**: "Is the file at the `target_path` specified in `tasks.json`?"
 
+### 4. Artifact Integrity Check (All Phases)
+-   **JSON Validity**: All `.json` artifacts (task.json, lesson.json, pattern.json, concerns.json, etc.) MUST be valid JSON parseable by a standard JSON parser.
+-   **String Escaping**: String values MUST properly escape: double quotes (`\"`), backslashes (`\\`), newlines (`\n`), tabs (`\t`), and other control characters.
+-   **Pre-Write Validation**: Before writing any `.json` file, validate it is well-formed JSON. If validation fails, fix escaping issues before saving.
+-   **Failure Protocol**: If a JSON artifact fails validation, treat it as a guardrail failure — fix immediately and record via `/sdd-learn`.
+
 ## Rule Compliance Engine
 
 ### How It Works

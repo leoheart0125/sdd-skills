@@ -24,11 +24,51 @@ This skill is the central nervous system of the SDD framework. It goes beyond si
 -   `/sdd-pattern-save`: Save a reusable pattern from the current design.
     -   *Usage*: `/sdd-pattern-save "Standard JWT Auth Flow"`
 -   `/sdd-rule-update`: Propose an update to `project_rules.md`.
+-   `/sdd-knowledge-reindex`: Rebuild `index.json` by scanning all pattern/lesson files (use only if index is corrupt or out of sync).
 
 ## Data Structures
 
+### 0. Knowledge Index (`.sdd/knowledge/index.json`) — CRITICAL
+
+The index is a lightweight manifest of all patterns and lessons. **All other skills MUST read only this file first**, then selectively load only the matching entries. This prevents full-scanning the knowledge directory and keeps context clean.
+
+```json
+{
+    "patterns": {
+        "<pattern_id>": {
+            "tags": ["auth", "jwt", "api"],
+            "summary": "One-line description for quick relevance check",
+            "file": "patterns/<pattern_id>.json"
+        }
+    },
+    "lessons": {
+        "<lesson_id>": {
+            "tags": ["auth", "api"],
+            "trigger": "designing-auth",
+            "summary": "One-line description for quick relevance check",
+            "file": "lessons/<lesson_id>.json"
+        }
+    }
+}
+```
+
+**Index Sync Rules**:
+-   Every `/sdd-pattern-save` and `/sdd-learn` call MUST update `index.json` atomically (add the new entry).
+-   Every deletion of a pattern/lesson MUST remove its entry from `index.json`.
+-   `/sdd-init` MUST create an empty index: `{ "patterns": {}, "lessons": {} }`.
+-   If `index.json` is missing or corrupt, rebuild it by scanning all files in `patterns/` and `lessons/` (fallback only).
+
+**Lookup Protocol** (used by all other skills):
+1.  Read `.sdd/knowledge/index.json` (small, typically < 50 lines).
+2.  Filter entries by matching `tags` against the current feature's domain keywords.
+3.  For lessons, also match `trigger` against the current phase (e.g., `"designing-*"`, `"planning-*"`, `"implementing-*"`, `"guard-check-*"`).
+4.  Load ONLY the matched files (typically 0–5 files instead of all).
+5.  If no matches, proceed without loading any knowledge files.
+
 ### 1. Patterns (`.sdd/knowledge/patterns/`)
 Reusable JSON/Markdown templates for Architecture or Code.
+**JSON Writing Rule**: When generating any JSON artifact, all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Verify JSON validity before writing to disk.
+
 -   `pattern_id`: Unique ID (e.g., `auth-jwt-flow`)
 -   `tags`: Cross-feature retrieval tags (e.g., `["auth", "jwt", "api"]`)
 -   `context`: When to use this pattern

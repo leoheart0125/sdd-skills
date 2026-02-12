@@ -30,6 +30,10 @@ This skill consolidates the entire design phase into a unified, friction-free fl
 -   `/sdd-design-api`: Force entry into Data/API Design.
 -   `/sdd-spec-update`: Adjust spec based on "drift" detected during implementation.
 
+## JSON Writing Rule
+
+When generating any JSON artifact (`requirements.json`, `architecture.json`, `data_api.json`, `concerns.json`), all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk. If validation fails, fix escaping issues before saving.
+
 ## Feature-Scoped Output
 
 All spec artifacts are written to `.sdd/spec/<feature-id>/`:
@@ -110,12 +114,14 @@ This is NOT optional. Every user correction during design is a gap between expec
 
 ## Design Pipeline
 
-### Pre-step: Knowledge Lookup (MANDATORY)
+### Pre-step: Knowledge Lookup (MANDATORY — Index-Based)
 Before generating **any** design artifact (requirements, architecture, or API), the engine MUST:
-1.  Search `.sdd/knowledge/patterns/` for entries whose tags relate to the current feature.
-2.  Search `.sdd/knowledge/lessons/` for entries whose tags or triggers relate to the current feature.
-3.  Summarize relevant findings and incorporate them into the design output.
-4.  If no relevant knowledge is found, proceed normally.
+1.  Read `.sdd/knowledge/index.json` (the lightweight index).
+2.  Filter `patterns` entries whose `tags` overlap with the current feature's domain keywords.
+3.  Filter `lessons` entries whose `tags` overlap OR whose `trigger` matches `"designing-*"`.
+4.  Load ONLY the matched files (via the `file` path in each index entry). Do NOT scan the full `patterns/` or `lessons/` directories.
+5.  Summarize relevant findings and incorporate them into the design output.
+6.  If no matches found in the index, proceed normally without loading any knowledge files.
 
 ### 1. Requirements (formerly `sdd-requirements-engine`)
 -   **Input**: User conversation / Intent.

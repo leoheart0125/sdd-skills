@@ -30,7 +30,7 @@ When `/sdd-impl-start` is called:
 2.  **Check Context**: Read `.sdd/context/context.json` to determine Language, Framework, and `current_feature`.
 3.  **Read Task**: Load from `.sdd/plan/<feature-id>/tasks.json` using the task ID.
 4.  **Validate Target Path**: Ensure the task's `target_path` follows `project_rules.md` conventions.
-5.  **Query Knowledge Base**: Look for existing patterns in `knowledge/patterns/` matching the stack and **tags**.
+5.  **Query Knowledge Base (Index-Based)**: Read `.sdd/knowledge/index.json`, filter `patterns` by tags matching the current task's domain and stack. Load ONLY the matched pattern files. Do NOT scan the full `patterns/` directory.
 6.  **Generate/Scaffold**:
     -   If a pattern exists, use it.
     -   If not, generate idiomatic code based on `project_rules.md` and the technology stack.
@@ -55,7 +55,17 @@ If the developer (or agent) realizes the `openapi.yaml` is missing a field durin
 4.  Record a lesson: the gap between spec and reality.
 5.  Resume implementation.
 
+## Task Completion Behavior
+
+After each task is implemented via `/sdd-impl-start`:
+1.  Update the task's status to `done` in `tasks.json`.
+2.  Append the session log entry as described above.
+3.  Inform the user of progress (e.g., "Task 3/5 complete").
+4.  **Do NOT auto-trigger the finish flow.** The verification, knowledge extraction, and archival steps below are ONLY executed when the user explicitly calls `/sdd-impl-finish`.
+
 ## Completion & Mandatory Knowledge Extraction
+
+> **User-Triggered Only**: This entire flow is ONLY executed when the user explicitly calls `/sdd-impl-finish`. Never run it automatically after completing tasks.
 
 When `/sdd-impl-finish` is called:
 

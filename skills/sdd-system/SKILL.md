@@ -31,10 +31,11 @@ When `/sdd-init` is called:
     - `spec/` — Feature-scoped spec subdirectories
     - `plan/` — Feature-scoped plan subdirectories
     - `features/` — Feature snapshot archive (spec + plan per feature)
+    - `knowledge/index.json` — Lightweight knowledge index (initialize as `{ "patterns": {}, "lessons": {} }`)
     - `knowledge/patterns/` — Reusable design/code patterns
     - `knowledge/lessons/` — Lessons learned from past work
     - `data/`, `logs/`, `temp/`
-3.  Generate initial `context.json` from template (includes `current_stage`, `current_feature`, etc.).
+3.  Generate initial `context.json` from template (includes `current_stage`, `current_feature`, etc.). **JSON Writing Rule**: All string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk.
 4.  Generate initial `project_rules.md` template.
 5.  Report: "Project initialized. Ready for `/sdd-design`."
 

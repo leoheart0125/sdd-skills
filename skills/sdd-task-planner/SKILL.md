@@ -33,10 +33,12 @@ When `/sdd-plan` is called:
 3.  Extract coding standards and naming conventions.
 4.  These rules constrain all subsequent task generation.
 
-### Step 2: Knowledge Lookup (MANDATORY)
-1.  Search `.sdd/knowledge/patterns/` for entries whose tags match the current feature's domain (e.g., `crud`, `auth`).
-2.  Search `.sdd/knowledge/lessons/` for entries whose tags or triggers relate to planning or the current feature.
-3.  Summarize relevant findings — reuse proven strategies and avoid past mistakes.
+### Step 2: Knowledge Lookup (MANDATORY — Index-Based)
+1.  Read `.sdd/knowledge/index.json` (the lightweight index).
+2.  Filter `patterns` entries whose `tags` match the current feature's domain (e.g., `crud`, `auth`).
+3.  Filter `lessons` entries whose `tags` match OR whose `trigger` matches `"planning-*"` or the current feature's domain.
+4.  Load ONLY the matched files (via the `file` path in each index entry). Do NOT scan the full `patterns/` or `lessons/` directories.
+5.  Summarize relevant findings — reuse proven strategies and avoid past mistakes.
 
 ### Step 3: Analyze Feature Context
 1.  Read `context.json` — get `current_feature`, `architecture_style`, `project_structure_convention`.
@@ -68,6 +70,9 @@ After generating tasks, invoke `sdd-guardrails` with context `"plan"`:
     -   Example: Screaming Architecture → `src/users/domain/user.ts` ✅, `src/domain/user.ts` ❌
 -   **Rule Compliance**: Ensure task descriptions don't contradict `project_rules.md`.
 -   If violations found → fix tasks → re-validate.
+
+### JSON Writing Rule
+When writing `tasks.json`, all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk. If validation fails, fix escaping issues before saving.
 
 ### Step 7: Finalize
 1.  Write `tasks.json` to `.sdd/plan/<feature-id>/tasks.json`.
