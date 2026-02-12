@@ -74,25 +74,31 @@ When `/sdd-impl-finish` is called:
 2.  Verify all tasks for the feature have status `done` or `verified`.
 
 ### Step 2: Knowledge Extraction (MANDATORY)
-Instead of asking "would you like to save patterns?", the agent **auto-generates drafts** for user confirmation:
+Instead of asking "would you like to save patterns?", the agent **auto-generates drafts**, triages them, and presents for user confirmation:
 
 1.  **Read Session Log**: Load `.sdd/logs/session.md` for the full implementation history across ALL sessions. This is the primary source of truth for what happened during implementation.
 
 2.  **Pattern Draft**: Analyze the implemented code and session log for reusable patterns.
     -   Identify repeating code structures (e.g., "CRUD endpoint with validation and error handling").
     -   Generate a draft pattern with suggested **tags** (e.g., `["crud", "rest", "validation"]`).
-    -   Present to user: "I identified this reusable pattern. Confirm to save, edit, or skip."
 
 3.  **Lesson Draft**: Review session log AND current conversation for gaps:
     -   Were there spec updates (`/sdd-spec-update` calls)?
     -   Were there guardrail failures?
     -   Were there user corrections during clarification?
     -   For each gap, generate a draft lesson.
-    -   Present to user: "I found these lessons from this feature. Confirm, edit, or skip."
 
-4.  **Save Confirmed Items**:
-    -   Patterns → `.sdd/knowledge/patterns/<pattern-id>.json`
-    -   Lessons → `.sdd/knowledge/lessons/<lesson-id>.json`
+4.  **Knowledge Triage** (MANDATORY — see `sdd-knowledge-base` for full protocol):
+    -   **Dedup**: Check `index.json` for existing entries with overlapping tags and semantics. Merge instead of duplicating.
+    -   **Specificity Check**: Classify each draft as project-wide → promote to `project_rules.md`, domain-specific → save, or feature-specific → skip.
+    -   **Present triage table** to user with proposed action (MERGE / PROMOTE / SAVE / SKIP) and reason for each draft.
+    -   User confirms, edits, or overrides each action.
+
+5.  **Execute Confirmed Actions**:
+    -   MERGE → Update existing entry in-place + update `index.json`.
+    -   PROMOTE → Append to `project_rules.md` via `/sdd-rule-update`. Do NOT save as pattern/lesson.
+    -   SAVE → Write new file + add entry to `index.json`.
+    -   SKIP → Discard (archived naturally with the feature).
     -   Update `context.json.active_patterns` and `context.json.applied_lessons`.
 
 ### Step 3: Feature Archival
@@ -110,7 +116,7 @@ Lessons are not only recorded at `/sdd-impl-finish`. During implementation, if:
 -   A guardrail fails and is fixed → record as lesson
 -   An unexpected framework behavior is encountered → record as lesson
 
-These are recorded immediately via `/sdd-learn`, not deferred to finish. Additionally, every such event MUST be appended to `.sdd/logs/session.md` so it is preserved across sessions.
+These are recorded immediately via `/sdd-learn` (which applies Knowledge Triage — dedup and specificity check — before saving). Additionally, every such event MUST be appended to `.sdd/logs/session.md` so it is preserved across sessions.
 
 ## Integration
 

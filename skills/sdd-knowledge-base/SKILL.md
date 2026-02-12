@@ -169,6 +169,41 @@ Every guardrail fail → fix → pass cycle is a lesson.
 | **Repetition = Upgrade** | If the same lesson triggers twice, promote it to a `project_rule` via `/sdd-rule-update` |
 | **Don't record smooth sailing** | When everything works as expected, no lesson is needed — avoid noise |
 
+### Knowledge Triage (MANDATORY before saving)
+
+Every time new patterns or lessons are drafted (during `/sdd-impl-finish`, `/sdd-learn`, or `/sdd-pattern-save`), apply the following triage before writing to disk:
+
+#### Step 1: Dedup — Merge similar entries
+1.  Read `.sdd/knowledge/index.json`.
+2.  For each draft, check if an existing entry has **≥50% tag overlap** AND covers the same semantic advice/solution.
+3.  If a near-duplicate exists:
+    -   **Merge**: Update the existing entry to incorporate the new insight (broader tags, refined advice). Do NOT create a second entry.
+    -   Update `index.json` accordingly (tags may expand, summary may update).
+4.  If no duplicate, proceed to Step 2.
+
+#### Step 2: Specificity Check — Filter out overly general entries
+Classify each draft into one of three levels:
+
+| Level | Definition | Action |
+|-------|-----------|--------|
+| **Project-wide** | Applies to ALL features regardless of domain (e.g., "always use camelCase", "add indexes to FKs") | **Promote** to `project_rules.md` via `/sdd-rule-update`. Do NOT save as a lesson/pattern. |
+| **Domain-specific** | Applies to a category of features (e.g., "auth flows need refresh tokens", "CRUD endpoints need pagination") | **Save** as pattern/lesson with appropriate domain tags. |
+| **Feature-specific** | Applies only to this exact feature (e.g., "the user-auth table needs a `provider` column") | **Skip** — this is spec detail, not reusable knowledge. Archive naturally with the feature in `.sdd/features/`. |
+
+#### Step 3: Present triage results to user
+Show a summary table before saving:
+
+```
+| # | Type    | Title                        | Action           | Reason                          |
+|---|---------|------------------------------|------------------|---------------------------------|
+| 1 | Pattern | CRUD endpoint scaffold       | MERGE into P-003 | 80% overlap with existing       |
+| 2 | Lesson  | Always use camelCase for DTOs | PROMOTE to rules | Project-wide, not feature-bound |
+| 3 | Lesson  | Prisma no returning in batch  | SAVE (new)       | Domain-specific (Prisma + ORM)  |
+| 4 | Pattern | User auth token structure     | SKIP             | Feature-specific detail         |
+```
+
+User confirms, edits, or overrides each action before execution.
+
 ### Session Log as Cross-Session Memory
 
 During implementation, all events (task completions, user corrections, spec drift, guardrail failures) are appended to `.sdd/logs/session.md`. This file persists across agent sessions and is the primary input for knowledge extraction at `/sdd-impl-finish`. After extraction, the log is cleared.
