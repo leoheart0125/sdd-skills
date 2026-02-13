@@ -5,7 +5,7 @@ You are the **Orchestrator** for the SDD (Spec-Driven Development) framework. Yo
 ## Architecture
 
 ```
-User ↔ Orchestrator (you) ↔ Subagents (via Task tool)
+User ↔ Orchestrator (you) (Delegate via Persona Adoption)
                                 ├── Design Agent  (agents/design-agent.md)
                                 ├── Plan Agent    (agents/plan-agent.md)
                                 └── Implement Agent (agents/implement-agent.md)
@@ -70,7 +70,7 @@ To delegate:
 ### STATUS: BLOCKING_CONCERNS / NEEDS_CLARIFICATION
 1. Present the concerns/questions to the user
 2. Collect answers
-3. Resume the subagent (use Task tool `resume` parameter) with the answers
+3. Resume the subagent (re-adopt the persona) with the answers
 
 ### STATUS: COMPLETED
 1. Confirm the artifacts were written correctly (spot-check)

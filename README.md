@@ -1,6 +1,6 @@
 # SDD Skills - Compounding Engineering Framework
 
-A next-generation Spec-Driven Development (SDD) framework designed for **Compounding Engineering**. It doesn't just manage the lifecycle; it accumulates knowledge (patterns, templates, lessons) to make every future feature faster to build.
+A next-generation Spec-Driven Development (SDD) framework designed for **Compounding Engineering**. It uses an **Agentic Orchestrator** pattern to manage the lifecycle, accumulating knowledge (patterns, templates, lessons) to make every future feature faster to build.
 
 ## Core Philosophy
 
@@ -13,10 +13,14 @@ A next-generation Spec-Driven Development (SDD) framework designed for **Compoun
 
 ### 1. Installation
 
-Copy the skill directories to your project's `.agent/skills/` folder:
+Copy the framework components to your project's `.agent/` directory:
 
 ```bash
+mkdir -p .agent/skills .agent/agents .agent/commands
 cp -r ./skills/* .agent/skills/
+cp -r ./agents/* .agent/agents/
+cp -r ./commands/* .agent/commands/
+cp AGENT.md .agent/
 ```
 
 ### 2. Initialization
@@ -28,20 +32,22 @@ Sets up the `.sdd/` directory structure (including `knowledge/patterns/`, `knowl
 
 ### 3. Workflow
 
-**Phase 1: Design**
+The **Orchestrator** (`AGENT.md`) routes commands to specialized sub-agents.
+
+**Phase 1: Design (Design Agent)**
 ```bash
 /sdd-design
 ```
-Analyzes your requirements with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, and defines the API spec. All artifacts scoped to the active feature.
+Analyzes your requirements with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, and defines the API spec.
 *Shortcuts:* `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-api`
 
-**Phase 2: Plan**
+**Phase 2: Plan (Plan Agent)**
 ```bash
 /sdd-plan
 ```
 Reads `project_rules.md` first, then generates an implementation plan with concrete tasks (including `target_path` per task). Validates file placement against architecture conventions.
 
-**Phase 3: Implement**
+**Phase 3: Implement (Implement Agent)**
 ```bash
 /sdd-impl-start <TASK-ID>
 ```
@@ -64,6 +70,28 @@ Request a fix if guardrails fail.
 /sdd-rule-update "proposed rule"       # Propose a project rule update
 ```
 
+## System Components
+
+### Orchestrator
+- **`AGENT.md`**: The central brain that routes commands, manages state, and delegates to specialized agents.
+
+### Agents
+| Agent | Role | Description |
+|-------|------|-------------|
+| [`agents/design-agent.md`](./agents/design-agent.md) | **Architect** | Handles requirements analysis, architecture design, and API specification using `sdd-design-engine`. |
+| [`agents/plan-agent.md`](./agents/plan-agent.md) | **Planner** | Converts specs into actionable tasks using `sdd-task-planner`. |
+| [`agents/implement-agent.md`](./agents/implement-agent.md) | **Builder** | Executes tasks, writes code, and runs tests using `sdd-implementer` and `sdd-guardrails`. |
+
+### Skills
+| Skill | Role | Description |
+|-------|------|-------------|
+| [`sdd-system`](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization, feature management, and global status. |
+| [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Unifies Requirements -> Architecture -> API design with Ambiguity Resolution Protocol. |
+| [`sdd-knowledge-base`](./skills/sdd-knowledge-base/SKILL.md) | **Memory** | Central store for State, Design Patterns (tag-based), Lessons Learned (event-driven). |
+| [`sdd-guardrails`](./skills/sdd-guardrails/SKILL.md) | **Safety** | Continuous validation with programmatic rule enforcement at design, plan, and implementation stages. |
+| [`sdd-task-planner`](./skills/sdd-task-planner/SKILL.md) | **Planning Core** | Generates implementation plans with rule-aware `target_path` validation and pattern matching by tags. |
+| [`sdd-implementer`](./skills/sdd-implementer/SKILL.md) | **Execution Core** | Scaffolds code from templates, enforces mandatory knowledge extraction on feature completion. |
+
 ## Storage Structure
 
 All SDD artifacts are stored in the `.sdd/` directory. **Do not edit these manually** unless you know what you are doing.
@@ -84,17 +112,6 @@ All SDD artifacts are stored in the `.sdd/` directory. **Do not edit these manua
 ├── data/                 # Raw Data Store
 └── logs/                 # Operational Logs
 ```
-
-## Skills Overview
-
-| Skill | Role | Description |
-|-------|------|-------------|
-| [sdd-system](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization, feature management, and global status. |
-| [sdd-design-engine](./skills/sdd-design-engine/SKILL.md) | **Architect** | Unifies Requirements -> Architecture -> API design with Ambiguity Resolution Protocol. |
-| [sdd-knowledge-base](./skills/sdd-knowledge-base/SKILL.md) | **Brain** | Central store for State, Design Patterns (tag-based), Lessons Learned (event-driven). |
-| [sdd-guardrails](./skills/sdd-guardrails/SKILL.md) | **Safety** | Continuous validation with programmatic rule enforcement at design, plan, and implementation stages. |
-| [sdd-task-planner](./skills/sdd-task-planner/SKILL.md) | **Planner** | Generates implementation plans with rule-aware `target_path` validation and pattern matching by tags. |
-| [sdd-implementer](./skills/sdd-implementer/SKILL.md) | **Builder** | Scaffolds code from templates, enforces mandatory knowledge extraction on feature completion. |
 
 ## License
 
