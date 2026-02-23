@@ -1,11 +1,16 @@
 <!-- Description: Start a feature request conversation. Acts as a PM to discuss requirements and produce a structured spec. -->
 
-Read the orchestration rules in AGENT.md. This command requires delegation to the Request Agent.
+CRITICAL: You MUST delegate this task to a subagent using the Task tool. Do NOT handle this yourself.
 
-Delegate to the Request Agent (agents/request-agent.md):
-1. Read the agent's prompt file at agents/request-agent.md
-2. Adopt the persona defined in the agent's prompt
-3. Execute the sdd-request skill (skills/sdd-request/SKILL.md)
-4. Pass user args as the initial feature description
+Instructions:
+1. Read the agent prompt file at `agents/request-agent.md`
+2. Read the skill spec at `skills/sdd-request/SKILL.md`
+3. Use the **Task tool** (subagent_type: "general-purpose") to spawn a subagent with a prompt that includes:
+   - The full content of `agents/request-agent.md` as the agent's persona
+   - The full content of `skills/sdd-request/SKILL.md` as the skill instructions
+   - The user's feature description (below)
+   - The current working directory path
+4. The subagent will interact with the user directly via AskUserQuestion. Do NOT run it in the background.
+5. When the subagent completes, relay its results to the user and suggest the next step (`/sdd-design`).
 
-User args: $ARGUMENTS
+User's feature description: $ARGUMENTS
