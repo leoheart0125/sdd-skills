@@ -39,19 +39,25 @@ cp AGENT.md .agent/
 ### 2. Initialization
 
 ```bash
-/sdd-init
+/sdd-init product should be testable, high-quality and implement by MVP never overdesign
 ```
-Sets up the `.sdd/` directory structure (including `knowledge/patterns/`, `knowledge/lessons/`, `features/`) and default configuration.
+Sets up the `.sdd/` directory structure (including `knowledge/patterns/`, `knowledge/lessons/`, `features/`) and default configuration. Optional args define the project's guiding principles in `project_rules.md`.
 
 ### 3. Workflow
 
 The **Orchestrator** (`AGENT.md`) routes commands to specialized sub-agents.
 
+**Phase 0: Request (Request Agent)**
+```bash
+/sdd-request user authentication with social login
+```
+Acts as a **Product Manager** — discusses requirements interactively, asks clarifying questions, and produces a structured `request.md` with user stories, acceptance criteria, and scope. Auto-assigns a sequential feature ID (e.g., `001-user-auth`).
+
 **Phase 1: Design (Design Agent)**
 ```bash
 /sdd-design
 ```
-Analyzes your requirements with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, and defines the API spec.
+Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, and defines the API spec.
 *Shortcuts:* `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-api`
 
 **Phase 2: Plan (Plan Agent)**
@@ -100,6 +106,7 @@ This project ships commands in two formats:
 ### Agents
 | Agent | Role | Description |
 |-------|------|-------------|
+| [`agents/request-agent.md`](./agents/request-agent.md) | **Product Manager** | Facilitates requirement discussions and produces structured `request.md` specs using `sdd-request`. |
 | [`agents/design-agent.md`](./agents/design-agent.md) | **Architect** | Handles requirements analysis, architecture design, and API specification using `sdd-design-engine`. |
 | [`agents/plan-agent.md`](./agents/plan-agent.md) | **Planner** | Converts specs into actionable tasks using `sdd-task-planner`. |
 | [`agents/implement-agent.md`](./agents/implement-agent.md) | **Builder** | Executes tasks, writes code, and runs tests using `sdd-implementer` and `sdd-guardrails`. |
@@ -107,8 +114,9 @@ This project ships commands in two formats:
 ### Skills
 | Skill | Role | Description |
 |-------|------|-------------|
-| [`sdd-system`](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization, feature management, and global status. |
-| [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Unifies Requirements -> Architecture -> API design with Ambiguity Resolution Protocol. |
+| [`sdd-system`](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization (with optional project principles), feature management with auto-increment IDs, and global status. |
+| [`sdd-request`](./skills/sdd-request/SKILL.md) | **PM Core** | Interactive requirement elicitation — produces structured `request.md` with user stories, acceptance criteria, and scope. |
+| [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Transforms `request.md` into Requirements -> Architecture -> API design with Ambiguity Resolution Protocol. |
 | [`sdd-knowledge-base`](./skills/sdd-knowledge-base/SKILL.md) | **Memory** | Central store for State, Design Patterns (tag-based), Lessons Learned (event-driven). |
 | [`sdd-guardrails`](./skills/sdd-guardrails/SKILL.md) | **Safety** | Continuous validation with programmatic rule enforcement at design, plan, and implementation stages. |
 | [`sdd-task-planner`](./skills/sdd-task-planner/SKILL.md) | **Planning Core** | Generates implementation plans with rule-aware `target_path` validation and pattern matching by tags. |
@@ -121,10 +129,10 @@ All SDD artifacts are stored in the `.sdd/` directory. **Do not edit these manua
 ```
 .sdd/
 ├── context/              # Global Project Context & Rules
-│   ├── context.json      # State: tech_stack, current_feature, stage, patterns, lessons
-│   └── project_rules.md  # Architecture rules, coding standards, conventions
+│   ├── context.json      # State: tech_stack, current_feature, stage, feature_counter, patterns, lessons
+│   └── project_rules.md  # Architecture rules, coding standards, conventions (+ user-defined principles)
 ├── spec/                 # Feature-Scoped Specifications
-│   └── <feature-id>/    # requirements.json, architecture.json, openapi.yaml, concerns.json
+│   └── <feature-id>/    # request.md, requirements.json, architecture.json, openapi.yaml, concerns.json
 ├── plan/                 # Feature-Scoped Implementation Plans
 │   └── <feature-id>/    # tasks.json (with target_path per task)
 ├── features/             # Archived Snapshots (spec+plan per completed feature)

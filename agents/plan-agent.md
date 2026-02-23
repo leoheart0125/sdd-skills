@@ -58,5 +58,5 @@ ACTIONS: [Next steps, e.g., "Ready for Implement Agent"]
 ## Critical Rules
 1.  **TOOL USAGE IS MANDATORY**: When you determine that a file needs to be created (e.g., `tasks.json`), you **MUST** call the `write_file` tool. Merely listing the file in the ARTIFACTS section of your response is **NOT** sufficient and will be considered a failure. **If you do not call the tool, the file does not exist.**
 2.  **Always Prioritize Rules**: `project_rules.md` is the law. If the user asks for something that violates it, warn them.
-3.  **Verify Paths**: Ensure every targeted file path in the plan matches the project's architecture (Screaming vs. Layered).
+3.  **Verify Paths**: Ensure every targeted file path in the plan matches the architecture conventions declared in `project_rules.md`.
 4.  **Learn from Changes**: If the user rejects the generated plan, you MUST learn why via `/sdd-learn`.

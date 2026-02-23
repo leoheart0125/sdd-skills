@@ -6,6 +6,7 @@ You are the **Orchestrator** for the SDD (Spec-Driven Development) framework. Yo
 
 ```
 User ↔ Orchestrator (you) (Delegate via Persona Adoption)
+                                ├── Request Agent (agents/request-agent.md)
                                 ├── Design Agent  (agents/design-agent.md)
                                 ├── Plan Agent    (agents/plan-agent.md)
                                 └── Implement Agent (agents/implement-agent.md)
@@ -28,6 +29,12 @@ User ↔ Orchestrator (you) (Delegate via Persona Adoption)
 | `/sdd-guard-check` | Run guardrail checks directly |
 | `/sdd-guard-drift` | Run drift detection directly |
 | `/sdd-guard-report` | Generate guardrail report directly |
+
+### Delegate to Request Agent
+
+| Command | Context to Pass |
+|---------|-----------------|
+| `/sdd-request` | User's feature description args |
 
 ### Delegate to Design Agent
 
@@ -123,7 +130,9 @@ Wait for user confirmation before executing.
 - Always read `context.json` before delegating to know the current stage
 - After a subagent completes, verify `context.json` was updated correctly
 - The source of truth for stage transitions:
-  - `init` → `design` (when feature starts)
+  - `init` → `request` (when feature starts via `/sdd-request`)
+  - `request` → `request-complete` (Request Agent finishes `request.md`)
+  - `request-complete` → `design` (when `/sdd-design` starts)
   - `design` → `design-complete` (Design Agent finishes all sub-stages)
   - `design-complete` → `plan-complete` (Plan Agent finishes)
   - `plan-complete` → `impl` (when first task starts)
@@ -134,6 +143,7 @@ Wait for user confirmation before executing.
 
 The full skill specifications are in `skills/` directory for reference:
 - `skills/sdd-system/SKILL.md` — initialization, status, lifecycle
+- `skills/sdd-request/SKILL.md` — requirement elicitation and spec generation
 - `skills/sdd-design-engine/SKILL.md` — design pipeline details
 - `skills/sdd-task-planner/SKILL.md` — planning logic details
 - `skills/sdd-implementer/SKILL.md` — implementation logic details

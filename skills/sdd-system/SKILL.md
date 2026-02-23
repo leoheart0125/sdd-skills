@@ -12,13 +12,13 @@ This skill is the entry point for the Compounding Engineering framework. It hand
 ## Core Responsibilities
 
 1.  **Project Initialization**: Setup `.sdd/` directory, `project_rules.md`, and Knowledge Base directories.
-2.  **Feature Lifecycle**: Manage features from creation through design → plan → impl → complete → learn.
+2.  **Feature Lifecycle**: Manage features from creation through request → design → plan → impl → complete → learn.
 3.  **Global Status**: Display the "Big Picture" (Current Stage + Active Feature + Velocity + Knowledge Stats).
 4.  **Coordination**: Ensure other skills (Design, Guardrails, Planner) are installed and healthy.
 
 ## Commands
 
--   `/sdd-init`: Initialize a new Compounding Engineering project.
+-   `/sdd-init [project principles]`: Initialize a new Compounding Engineering project. Optional args define the project's guiding principles (e.g., `/sdd-init product should be testable, high-quality and implement by MVP never overdesign`).
 -   `/sdd-status`: Display current project health, active stage, active feature, and recent lessons learned.
 -   `/sdd-nuke`: (Dangerous) Reset internal state but keep learned patterns and lessons.
 
@@ -35,23 +35,27 @@ When `/sdd-init` is called:
     - `knowledge/patterns/` — Reusable design/code patterns
     - `knowledge/lessons/` — Lessons learned from past work
     - `data/`, `logs/`, `temp/`
-3.  Generate initial `context.json` from template (includes `current_stage`, `current_feature`, etc.). **JSON Writing Rule**: All string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk.
+3.  Generate initial `context.json` from template (includes `current_stage`, `current_feature`, `feature_counter: "001"`, etc.). **JSON Writing Rule**: All string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk.
 4.  Generate initial `project_rules.md` template.
-5.  Report: "Project initialized. Ready for `/sdd-design`."
+5.  **If user provided args**: Incorporate them as the "General Principles" section in `project_rules.md`. These principles guide all downstream design and implementation decisions.
+6.  Report: "Project initialized. Ready for `/sdd-request`."
 
 ## Feature Lifecycle
 
 Each feature follows this lifecycle, tracked via `context.json.current_stage`:
 
 ```
-init → design → design-complete → plan → plan-complete → impl → impl-complete
+init → request → request-complete → design → design-complete → plan → plan-complete → impl → impl-complete
 ```
 
 ### Starting a Feature
 1.  User provides feature name/intent.
-2.  Set `context.json.current_feature` to the feature ID (e.g., `user-auth`).
-3.  Create directory: `.sdd/spec/<feature-id>/` and `.sdd/plan/<feature-id>/`.
-4.  Set `context.json.current_stage` to `"design"`.
+2.  Read `context.json.feature_counter` (e.g., `"001"`).
+3.  Generate feature ID: `<counter>-<feature-name>` (e.g., `001-user-auth`).
+4.  Set `context.json.current_feature` to the generated feature ID.
+5.  Increment `feature_counter` (e.g., `"001"` → `"002"`).
+6.  Create directory: `.sdd/spec/<feature-id>/` and `.sdd/plan/<feature-id>/`.
+7.  Set `context.json.current_stage` to `"design"`.
 
 ### Completing a Feature
 1.  All tasks in `tasks.json` reach `"done"` or `"verified"` status.

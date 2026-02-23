@@ -12,6 +12,7 @@
     "version": "0.1.0",
     "current_stage": "init",
     "current_feature": null,
+    "feature_counter": "001",
     "completed_features": [],
     "active_patterns": [],
     "applied_lessons": [],
