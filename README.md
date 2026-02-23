@@ -13,7 +13,20 @@ A next-generation Spec-Driven Development (SDD) framework designed for **Compoun
 
 ### 1. Installation
 
-Copy the framework components to your project's `.agent/` directory:
+**For Claude Code (recommended):**
+
+```bash
+# Copy slash commands (Claude Code format)
+mkdir -p .claude/commands
+cp -r .claude/commands/* <your-project>/.claude/commands/
+
+# Copy framework core
+cp -r skills/ <your-project>/skills/
+cp -r agents/ <your-project>/agents/
+cp AGENT.md <your-project>/
+```
+
+**For other AI agents (TOML format):**
 
 ```bash
 mkdir -p .agent/skills .agent/agents .agent/commands
@@ -69,6 +82,15 @@ Request a fix if guardrails fail.
 /sdd-pattern-save "pattern name"       # Save a reusable pattern
 /sdd-rule-update "proposed rule"       # Propose a project rule update
 ```
+
+## Command Formats
+
+This project ships commands in two formats:
+
+| Format | Location | For |
+|--------|----------|-----|
+| **Claude Code** (`.md`) | `.claude/commands/` | Claude Code CLI — slash commands like `/sdd-init` |
+| **TOML** (`.toml`) | `commands/` | Other AI agents (Gemini CLI, etc.) |
 
 ## System Components
 

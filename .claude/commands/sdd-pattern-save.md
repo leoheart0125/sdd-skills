@@ -1,0 +1,12 @@
+<!-- Description: Save a reusable pattern. -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+
+Follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) pattern saving logic with Knowledge Triage:
+1. Draft the pattern from user input
+2. Dedup: Check .sdd/knowledge/index.json for ≥50% tag overlap with same solution
+3. Specificity: Classify as project-wide (PROMOTE), domain-specific (SAVE), or feature-specific (SKIP)
+4. Present triage table to user for confirmation
+5. Execute confirmed action (MERGE/PROMOTE/SAVE/SKIP)
+
+Pattern: $ARGUMENTS

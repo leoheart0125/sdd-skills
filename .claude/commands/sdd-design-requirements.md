@@ -1,0 +1,8 @@
+<!-- Description: Force entry into Requirements Analysis. -->
+
+Read the orchestration rules in AGENT.md. Delegate to the Design Agent (agents/design-agent.md) as per AGENT.md instructions.
+
+Command: /sdd-design-requirements
+User args: $ARGUMENTS
+
+Before delegating, read .sdd/context/context.json for current state. Tell the Design Agent to force-start Requirements Analysis regardless of current sub-stage.

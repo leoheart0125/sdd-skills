@@ -1,0 +1,12 @@
+<!-- Description: Initialize a new Compounding Engineering project. -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+
+Follow the sdd-system skill (skills/sdd-system/SKILL.md) initialization logic:
+1. Create .sdd/ directory structure (context/, spec/, plan/, features/, knowledge/, data/, logs/, temp/)
+2. Create knowledge/index.json as { "patterns": {}, "lessons": {} }
+3. Generate context.json from template
+4. Generate project_rules.md template
+5. Report ready for /sdd-design
+
+User args: $ARGUMENTS
