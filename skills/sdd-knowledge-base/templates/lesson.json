@@ -1,9 +1,7 @@
 {
     "id": "{{ lesson_id }}",
-    "date": "{{ date }}",
-    "context": "Start with the context (e.g., during migration of X).",
-    "issue": "What went wrong or was challenging?",
-    "resolution": "How was it resolved?",
-    "prevention": "How can we prevent this in the future?",
-    "tags": []
+    "tags": [],
+    "trigger": "{{ phase }}-{{ domain }}",
+    "context": "What happened — the gap between expectation and reality.",
+    "advice": "What to do about it — the specific guidance."
 }

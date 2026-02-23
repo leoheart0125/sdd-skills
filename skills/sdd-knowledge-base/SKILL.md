@@ -66,19 +66,25 @@ The index is a lightweight manifest of all patterns and lessons. **All other ski
 5.  If no matches, proceed without loading any knowledge files.
 
 ### 1. Patterns (`.sdd/knowledge/patterns/`)
-Reusable JSON/Markdown templates for Architecture or Code.
+Reusable JSON templates for Architecture or Code. See `templates/pattern.json` for the canonical template.
 **JSON Writing Rule**: When generating any JSON artifact, all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Verify JSON validity before writing to disk.
 
--   `pattern_id`: Unique ID (e.g., `auth-jwt-flow`)
+-   `id`: Unique ID (e.g., `auth-jwt-flow`)
+-   `name`: Human-readable name (e.g., `"Standard JWT Auth Flow"`)
 -   `tags`: Cross-feature retrieval tags (e.g., `["auth", "jwt", "api"]`)
--   `context`: When to use this pattern
--   `solution`: The verified design/code snippet
+-   `problem`: When to use this pattern — the problem it solves
+-   `solution`: The verified design/code approach
+-   `example`: Optional code snippet, reference, or implementation note
 
 **Tag-based retrieval**: When `sdd-task-planner` or `sdd-design-engine` searches for patterns, they match by tags rather than feature IDs. This enables patterns from a "user-auth" feature to be discoverable when building an "admin-auth" feature.
 
 ### 2. Lessons (`.sdd/knowledge/lessons/`)
--   `lesson_id`: Unique ID
--   `trigger`: When to recall this lesson (e.g., `"designing-auth"`, `"guard-check-code"`)
+See `templates/lesson.json` for the canonical template.
+
+-   `id`: Unique ID (e.g., `prisma-no-returning`)
+-   `tags`: Cross-feature retrieval tags (e.g., `["prisma", "orm", "batch"]`)
+-   `trigger`: When to recall this lesson — phase + domain (e.g., `"designing-auth"`, `"guard-check-code"`)
+-   `context`: What happened — the gap between expectation and reality
 -   `advice`: The specific guidance (e.g., `"Always add indexes to foreign keys"`)
 
 ### 3. State (`.sdd/context/context.json`)
@@ -112,7 +118,10 @@ The source of truth for the *current* project state.
 
 ```json
 {
+    "id": "sso-requirement",
+    "tags": ["auth", "sso"],
     "trigger": "designing-auth",
+    "context": "Agent assumed password-only login, but project requires SSO.",
     "advice": "This project requires SSO support. Do not assume password-only login."
 }
 ```
@@ -124,7 +133,10 @@ The source of truth for the *current* project state.
 
 ```json
 {
+    "id": "task-granularity",
+    "tags": ["planning", "granularity"],
     "trigger": "planning-tasks",
+    "context": "Generated tasks were too coarse, user split them further.",
     "advice": "This project prefers one task per commit. Keep granularity at single-responsibility level."
 }
 ```
@@ -138,7 +150,10 @@ The source of truth for the *current* project state.
 
 ```json
 {
+    "id": "prisma-no-returning",
+    "tags": ["prisma", "orm", "batch"],
     "trigger": "implementing-api-endpoint",
+    "context": "Prisma createMany was expected to return created records, but it does not.",
     "advice": "Prisma createMany does not support returning. Use transaction + create instead."
 }
 ```
@@ -155,7 +170,10 @@ Every guardrail fail → fix → pass cycle is a lesson.
 
 ```json
 {
+    "id": "dto-match-openapi",
+    "tags": ["api", "dto", "openapi"],
     "trigger": "guard-check-code",
+    "context": "Response DTO had extra wrapper fields not in the OpenAPI schema.",
     "advice": "Response DTO must exactly match OpenAPI schema. Do not add extra wrappers."
 }
 ```
