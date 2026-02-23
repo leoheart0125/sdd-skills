@@ -1,0 +1,10 @@
+<!-- Description: Mark task complete and enforce knowledge extraction. -->
+
+Read the orchestration rules in AGENT.md. Delegate to the Implement Agent (agents/implement-agent.md) as per AGENT.md instructions.
+
+Command: /sdd-impl-finish
+User args: $ARGUMENTS
+
+Before delegating, read .sdd/context/context.json for current state.
+
+IMPORTANT: When the Implement Agent returns with STATUS: KNOWLEDGE_TRIAGE, present the triage table to the user and wait for confirmation before resuming the agent.

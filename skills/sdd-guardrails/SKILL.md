@@ -31,9 +31,9 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 -   **Rule Conflict Check**: "Do generated specs conflict with `project_rules.md`?" — If yes, raise as BLOCKING concern.
 
 ### 2. Plan Checks (Called by `sdd-task-planner`) — NEW
--   **Path Convention Check**: Verify each task's `target_path` conforms to the architecture style in `project_rules.md`.
-    -   If `architecture_style` = "Screaming Architecture" → paths must follow `src/<feature>/<layer>/` pattern (e.g., `src/auth/domain/`, `src/auth/application/`)
-    -   Reject layer-first patterns (e.g., `src/domain/`, `src/controllers/`) unless explicitly allowed
+-   **Path Convention Check**: Verify each task's `target_path` conforms to the architecture conventions declared in `project_rules.md`.
+    -   Read `architecture_style` and `project_structure_convention` from `context.json` and the Architecture section of `project_rules.md`
+    -   Validate that all `target_path` values follow the declared convention
 -   **Rule Compliance Check**: Ensure task descriptions align with project rules (naming conventions, testing requirements, etc.)
 -   **Dependency Check**: Verify no circular dependencies in task graph
 
@@ -63,18 +63,17 @@ The Rule Compliance Engine is a **programmatic check**, not just a declaration. 
 | After tasks generated | `sdd-task-planner` calls `/sdd-guard-check plan` | `target_path` conventions |
 | After code generated | `sdd-implementer` calls `/sdd-guard-check code` | File placement, naming, spec match |
 
-#### Architecture Style Compliance (Example)
-
-Given `project_rules.md` states:
-> Screaming Architecture: Directory structure must reflect the domain concepts (e.g., `src/users/domain`, `src/users/application`).
+#### Architecture Style Compliance
 
 The guardrail check procedure:
 1.  Read `context.json.architecture_style` and `context.json.project_structure_convention`.
-2.  Read `project_rules.md` Architecture section.
-3.  For each task in `tasks.json`, validate `target_path`:
-    -   ✅ `src/auth/domain/auth-token.ts` → domain concept first
-    -   ❌ `src/domain/auth-token.ts` → layer first (violates Screaming Architecture)
+2.  Read `project_rules.md` Architecture section to understand the declared conventions.
+3.  For each task in `tasks.json`, validate `target_path` against the declared conventions.
 4.  For `architecture.json`, validate component grouping matches the declared style.
+
+> **Example**: If `project_rules.md` declares Screaming Architecture:
+> -   ✅ `src/auth/domain/auth-token.ts` → domain concept first
+> -   ❌ `src/domain/auth-token.ts` → layer first (violates convention)
 
 ## Drift Detection Logic
 

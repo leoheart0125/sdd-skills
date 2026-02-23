@@ -34,7 +34,7 @@ When `/sdd-impl-start` is called:
 6.  **Generate/Scaffold**:
     -   If a pattern exists, use it.
     -   If not, generate idiomatic code based on `project_rules.md` and the technology stack.
-7.  Place generated code at the `target_path` specified in the task.
+7.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
 
 ## Session Log (MANDATORY)
 

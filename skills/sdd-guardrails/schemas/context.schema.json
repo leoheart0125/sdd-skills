@@ -33,7 +33,7 @@
         },
         "project_structure_convention": {
             "type": "string",
-            "description": "Directory structure rules, e.g. screaming architecture conventions"
+            "description": "Directory structure conventions as declared in project_rules.md"
         },
         "version": {
             "type": "string"
@@ -42,6 +42,8 @@
             "type": "string",
             "enum": [
                 "init",
+                "request",
+                "request-complete",
                 "design",
                 "design-complete",
                 "plan",
@@ -50,6 +52,11 @@
                 "impl-complete"
             ],
             "description": "Current lifecycle stage of the active feature"
+        },
+        "feature_counter": {
+            "type": "string",
+            "pattern": "^\\d{3}$",
+            "description": "Zero-padded 3-digit counter for auto-increment feature IDs (e.g., 001, 002)"
         },
         "current_feature": {
             "oneOf": [

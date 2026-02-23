@@ -1,5 +1,6 @@
-description = "Initialize a new Compounding Engineering project. Optionally pass project principles as args (e.g., /sdd-init product should be testable, high-quality and implement by MVP never overdesign)."
-prompt = """Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+<!-- Description: Initialize a new Compounding Engineering project. Optionally pass project principles as args (e.g., /sdd-init product should be testable, high-quality and implement by MVP never overdesign). -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
 
 Follow the sdd-system skill (skills/sdd-system/SKILL.md) initialization logic:
 1. Create .sdd/ directory structure (context/, spec/, plan/, features/, knowledge/, data/, logs/, temp/)
@@ -9,4 +10,4 @@ Follow the sdd-system skill (skills/sdd-system/SKILL.md) initialization logic:
 5. If user provided args, incorporate them as "General Principles" in project_rules.md
 6. Report ready for /sdd-request
 
-User args: {{args}}"""
+User args: $ARGUMENTS

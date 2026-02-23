@@ -1,5 +1,6 @@
-description = "Extract a Lesson Learned."
-prompt = """Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+<!-- Description: Extract a Lesson Learned. -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
 
 Follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) lesson recording logic with Knowledge Triage:
 1. Draft the lesson from user input
@@ -8,4 +9,4 @@ Follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) lesson 
 4. Present triage table to user for confirmation
 5. Execute confirmed action (MERGE/PROMOTE/SAVE/SKIP)
 
-Lesson: {{args}}"""
+Lesson: $ARGUMENTS

@@ -1,2 +1,7 @@
 description = "Re-sort tasks based on dependencies."
-prompt = "Activate the 'sdd-task-planner' skill and follow its instructions to optimize the implementation plan for efficiency: {{args}}"
+prompt = """Read the orchestration rules in AGENT.md. Delegate to the Plan Agent (agents/plan-agent.md) as per AGENT.md instructions.
+
+Command: /sdd-plan-optimize
+User args: {{args}}
+
+Before delegating, read .sdd/context/context.json for current state. Tell the Plan Agent to optimize the existing task order."""

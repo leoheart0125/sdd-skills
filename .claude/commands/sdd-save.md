@@ -1,0 +1,5 @@
+<!-- Description: Persist current context.json and state. -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+
+Ensure .sdd/context/context.json is written to disk with current state. Validate JSON before writing.

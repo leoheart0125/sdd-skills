@@ -1,5 +1,6 @@
-description = "Save a reusable pattern."
-prompt = """Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+<!-- Description: Save a reusable pattern. -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
 
 Follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) pattern saving logic with Knowledge Triage:
 1. Draft the pattern from user input
@@ -8,4 +9,4 @@ Follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) pattern
 4. Present triage table to user for confirmation
 5. Execute confirmed action (MERGE/PROMOTE/SAVE/SKIP)
 
-Pattern: {{args}}"""
+Pattern: $ARGUMENTS

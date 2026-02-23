@@ -1,5 +1,6 @@
-description = "Propose an update to project_rules.md."
-prompt = """Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+<!-- Description: Propose an update to project_rules.md. -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
 
 Follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) rule evolution logic:
 1. Analyze the proposed rule
@@ -7,4 +8,4 @@ Follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) rule ev
 3. Present the proposed change to user for confirmation
 4. If confirmed, append to project_rules.md under "Evolved Conventions"
 
-Proposed rule: {{args}}"""
+Proposed rule: $ARGUMENTS

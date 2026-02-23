@@ -1,5 +1,6 @@
-description = "Reset internal state but keep learned knowledge."
-prompt = """Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
+<!-- Description: Reset internal state but keep learned knowledge. -->
+
+Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
 
 Follow the sdd-system skill (skills/sdd-system/SKILL.md) nuke logic:
 - Reset context.json (keep knowledge references)
@@ -7,4 +8,4 @@ Follow the sdd-system skill (skills/sdd-system/SKILL.md) nuke logic:
 - Preserve knowledge/ directory (patterns and lessons)
 - Confirm with user before proceeding (DESTRUCTIVE)
 
-Reason: {{args}}"""
+Reason: $ARGUMENTS
