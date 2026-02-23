@@ -1,6 +1,6 @@
 ---
 name: sdd-design-engine
-description: Unified design pipeline transforming intent into finalized specifications (Requirements → Architecture → API) with Ambiguity Resolution.
+description: Unified design pipeline transforming structured requirements into finalized specifications (Requirements → Architecture → API) with Ambiguity Resolution.
 dependencies:
   - sdd-knowledge-base
   - sdd-guardrails
@@ -8,7 +8,7 @@ dependencies:
 
 # SDD Design Engine
 
-This skill consolidates the entire design phase into a unified, friction-free flow. It transforms vague user intent into precise technical specifications through an automated pipeline with built-in **Ambiguity Resolution**.
+This skill consolidates the entire design phase into a unified, friction-free flow. It transforms a structured `request.md` (produced by `sdd-request`) into precise technical specifications through an automated pipeline with built-in **Ambiguity Resolution**.
 
 ## Core Responsibilities
 
@@ -21,8 +21,8 @@ This skill consolidates the entire design phase into a unified, friction-free fl
 ## Commands
 
 -   `/sdd-design`: Main entry point. Intelligently determines the next design step based on `context.json.current_stage`.
-    -   *If no active feature*: Prompt user for feature name, create feature directory, set `current_feature`.
-    -   *If stage is `design`*: Starts Requirements Analysis.
+    -   *If no active feature*: Suggest running `/sdd-request` first to create a feature and produce `request.md`.
+    -   *If stage is `design` and `request.md` exists*: Starts Requirements Analysis.
     -   *If requirements exist*: Proceed to Architecture.
     -   *If architecture exists*: Proceed to Data/API.
 -   `/sdd-design-requirements`: Force entry into Requirements Analysis.
@@ -124,8 +124,8 @@ Before generating **any** design artifact (requirements, architecture, or API), 
 6.  If no matches found in the index, proceed normally without loading any knowledge files.
 
 ### 1. Requirements (formerly `sdd-requirements-engine`)
--   **Input**: User conversation / Intent.
--   **Action**: Extract structured constraints and user stories. Assign `confidence_score` to each requirement.
+-   **Input**: `.sdd/spec/<feature-id>/request.md` (produced by `sdd-request`).
+-   **Action**: Transform structured user stories and acceptance criteria into technical requirements. Assign `confidence_score` to each requirement.
 -   **Clarify**: Run Ambiguity Resolution Protocol. Resolve all BLOCKING concerns.
 -   **Output**: `.sdd/spec/<feature-id>/requirements.json`.
 -   **Guardrail**: Check for ambiguity and potential conflicts with `project_rules.md`.
@@ -158,7 +158,7 @@ After completing each sub-stage successfully:
 
 ```mermaid
 graph TD
-    A[User Input] -->|/sdd-design| B(Analyze Requirements)
+    A[request.md] -->|/sdd-design| B(Analyze Requirements)
     B --> B1{Concerns?}
     B1 -->|BLOCKING/WARNING| B2[Ask User]
     B2 --> B3[User Answers]
@@ -188,22 +188,19 @@ graph TD
 
 ```
 User: /sdd-design
-Agent: No active feature. What feature are you building?
-User: User authentication with social login
-Agent: Setting feature ID: "user-auth". Creating .sdd/spec/user-auth/...
+Agent: Active feature: "001-user-auth". Found request.md.
 
-       [Requirements] Analyzing intent...
-       > Generated 5 User Stories.
+       [Requirements] Analyzing request.md...
+       > Generated 5 Technical Requirements from User Stories.
        > Confidence: REQ-001 (1.0), REQ-002 (0.8), REQ-003 (0.5)
 
        ⚠️ BLOCKING Concerns:
-       - C-001: Which social providers? (Google, GitHub, Apple?)
-       - C-002: Do social-login users also need password-based login?
+       - C-001: JWT or session-based tokens for social auth?
 
        ℹ️ INFO:
-       - C-003: Per project_rules, using Clean Architecture.
+       - C-002: Per project_rules, using Clean Architecture.
 
-User: Google and GitHub only. No password fallback for social users.
+User: JWT with refresh tokens.
 
 Agent: > Resolved. Updating requirements...
        > All concerns resolved. Guardrails passed. Auto-saving...

@@ -1,0 +1,11 @@
+<!-- Description: Start a feature request conversation. Acts as a PM to discuss requirements and produce a structured spec. -->
+
+Read the orchestration rules in AGENT.md. This command requires delegation to the Request Agent.
+
+Delegate to the Request Agent (agents/request-agent.md):
+1. Read the agent's prompt file at agents/request-agent.md
+2. Adopt the persona defined in the agent's prompt
+3. Execute the sdd-request skill (skills/sdd-request/SKILL.md)
+4. Pass user args as the initial feature description
+
+User args: $ARGUMENTS

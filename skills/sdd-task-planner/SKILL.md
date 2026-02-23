@@ -29,7 +29,7 @@ When `/sdd-plan` is called:
 
 ### Step 1: Read Project Rules (MANDATORY FIRST STEP)
 1.  Load `project_rules.md` from `.sdd/context/`.
-2.  Extract architecture conventions (e.g., Screaming Architecture → `src/<feature>/domain/`, `src/<feature>/application/`).
+2.  Extract architecture conventions from the Architecture section of `project_rules.md` (e.g., directory structure patterns, layer ordering).
 3.  Extract coding standards and naming conventions.
 4.  These rules constrain all subsequent task generation.
 
@@ -67,7 +67,7 @@ Present BLOCKING concerns to user and **STOP**. Wait for user resolution. Skip i
 ### Step 6: Guardrail Validation
 After generating tasks, invoke `sdd-guardrails` with context `"plan"`:
 -   **Path Convention Check**: Verify each task's `target_path` matches the architecture style.
-    -   Example: Screaming Architecture → `src/users/domain/user.ts` ✅, `src/domain/user.ts` ❌
+    -   Validate each task's `target_path` matches the conventions declared in `project_rules.md`.
 -   **Rule Compliance**: Ensure task descriptions don't contradict `project_rules.md`.
 -   If violations found → fix tasks → re-validate.
 
