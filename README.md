@@ -13,27 +13,24 @@ A next-generation Spec-Driven Development (SDD) framework designed for **Compoun
 
 ### 1. Installation
 
+First, add this repository as a submodule to your project:
+
+```bash
+git submodule add https://github.com/pnetwork/sdd-skills.git
+```
+
+Then, depending on your preferred AI agent, run the corresponding installation script from your project root:
+
 **For Claude Code (recommended):**
 
 ```bash
-# Copy slash commands (Claude Code format)
-mkdir -p .claude/commands
-cp -r .claude/commands/* <your-project>/.claude/commands/
-
-# Copy framework core
-cp -r skills/ <your-project>/skills/
-cp -r agents/ <your-project>/agents/
-cp AGENT.md <your-project>/
+./sdd-skills/install.sh --agent claude
 ```
 
-**For other AI agents (TOML format):**
+**For Gemini:**
 
 ```bash
-mkdir -p .agent/skills .agent/agents .agent/commands
-cp -r ./skills/* .agent/skills/
-cp -r ./agents/* .agent/agents/
-cp -r ./commands/* .agent/commands/
-cp AGENT.md .agent/
+./sdd-skills/install.sh --agent gemini
 ```
 
 ### 2. Initialization
