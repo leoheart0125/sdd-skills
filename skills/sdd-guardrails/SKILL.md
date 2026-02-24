@@ -42,6 +42,7 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 -   **Spec Match**: "Does the endpoint accept the defined DTO?"
 -   **Test Coverage**: "Are tests generated for this task?"
 -   **File Placement**: "Is the file at the `target_path` specified in `tasks.json`?"
+-   **Rule Compliance**: "Does the generated code follow Coding Standards, Architecture patterns, and naming conventions declared in `project_rules.md`?" — If violations found, raise as failure and fix before proceeding.
 
 ### 4. Artifact Integrity Check (All Phases)
 -   **JSON Validity**: All `.json` artifacts (task.json, lesson.json, pattern.json, concerns.json, etc.) MUST be valid JSON parseable by a standard JSON parser.

@@ -1,9 +1,9 @@
 description = "Mark task complete and enforce knowledge extraction."
-prompt = """Read the orchestration rules in AGENT.md. Delegate to the Implement Agent (agents/implement-agent.md) as per AGENT.md instructions.
+prompt = """Read and follow the sdd-implementer skill (skills/sdd-implementer/SKILL.md).
 
 Command: /sdd-impl-finish
 User args: {{args}}
 
-Before delegating, read .sdd/context/context.json for current state.
+Before executing, read .sdd/context/context.json for current state.
 
-IMPORTANT: When the Implement Agent returns with STATUS: KNOWLEDGE_TRIAGE, present the triage table to the user and wait for confirmation before resuming the agent."""
+IMPORTANT: When reaching STATUS: KNOWLEDGE_TRIAGE, present the triage table to the user and wait for confirmation before continuing."""

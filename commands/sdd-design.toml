@@ -1,10 +1,10 @@
 description = "Main entry point for SDD design."
-prompt = """Read the orchestration rules in AGENT.md. Delegate to the Design Agent (agents/design-agent.md) as per AGENT.md instructions.
+prompt = """Read and follow the sdd-design-engine skill (skills/sdd-design-engine/SKILL.md).
 
 Command: /sdd-design
 User args: {{args}}
 
-Before delegating:
+Before executing:
 1. Read .sdd/context/context.json to get current_feature and current_stage
-2. If no active feature, ask the user for a feature name first, create the feature directory, then delegate
-3. Read agents/design-agent.md and pass its full content as the subagent prompt along with current context"""
+2. If no active feature, ask the user for a feature name first, create the feature directory
+3. Execute the sdd-design-engine skill with current context"""

@@ -1,5 +1,0 @@
-<!-- Description: Restore context from disk. -->
-
-Read the orchestration rules in AGENT.md. This is a lightweight command — handle directly (no subagent needed).
-
-Read .sdd/context/context.json from disk and confirm the loaded state to the user. Display current feature, stage, and knowledge stats.

@@ -222,6 +222,20 @@ Show a summary table before saving:
 
 User confirms, edits, or overrides each action before execution.
 
+#### Step 4: Execute and Update Index (CRITICAL)
+
+After user confirms, execute each action AND **update `.sdd/knowledge/index.json`** atomically:
+
+| Action | File Operation | Index Operation |
+|--------|---------------|-----------------|
+| **SAVE** | Write new file to `patterns/` or `lessons/` | **Add** new entry to `index.json` with `tags`, `summary`, `file` (and `trigger` for lessons) |
+| **MERGE** | Update existing file in-place | **Update** existing entry in `index.json` (tags may expand, summary may change) |
+| **PROMOTE** | Append to `project_rules.md` | No index change (not a pattern/lesson) |
+| **SKIP** | No file written | No index change |
+
+> [!CAUTION]
+> If you write a pattern/lesson file but do NOT update `index.json`, the knowledge is **invisible** to all other skills. The index is the only lookup mechanism.
+
 ### Session Log as Cross-Session Memory
 
 During implementation, all events (task completions, user corrections, spec drift, guardrail failures) are appended to `.sdd/logs/session.md`. This file persists across agent sessions and is the primary input for knowledge extraction at `/sdd-impl-finish`. After extraction, the log is cleared.

@@ -26,15 +26,21 @@ This skill handles the "last mile" of development. It focuses on speed and consi
 ## Scaffolding Logic
 
 When `/sdd-impl-start` is called:
-1.  Check Task Type (e.g., "Create Endpoint").
-2.  **Check Context**: Read `.sdd/context/context.json` to determine Language, Framework, and `current_feature`.
-3.  **Read Task**: Load from `.sdd/plan/<feature-id>/tasks.json` using the task ID.
-4.  **Validate Target Path**: Ensure the task's `target_path` follows `project_rules.md` conventions.
-5.  **Query Knowledge Base (Index-Based)**: Read `.sdd/knowledge/index.json`, filter `patterns` by tags matching the current task's domain and stack. Load ONLY the matched pattern files. Do NOT scan the full `patterns/` directory.
-6.  **Generate/Scaffold**:
+1.  **Read Project Rules (MANDATORY FIRST STEP)**:
+    1.  Load `project_rules.md` from `.sdd/context/`.
+    2.  Extract **Coding Standards** (naming conventions, function size, documentation rules).
+    3.  Extract **Architecture** conventions (directory structure, layer ordering, dependency direction).
+    4.  Extract **Testing** requirements (unit test expectations, integration test scope).
+    5.  These rules constrain ALL subsequent code generation. Every line of generated code MUST comply.
+2.  Check Task Type (e.g., "Create Endpoint").
+3.  **Check Context**: Read `.sdd/context/context.json` to determine Language, Framework, and `current_feature`.
+4.  **Read Task**: Load from `.sdd/plan/<feature-id>/tasks.json` using the task ID.
+5.  **Validate Target Path**: Ensure the task's `target_path` follows `project_rules.md` conventions.
+6.  **Query Knowledge Base (Index-Based)**: Read `.sdd/knowledge/index.json`, filter `patterns` by tags matching the current task's domain and stack. Load ONLY the matched pattern files. Do NOT scan the full `patterns/` directory.
+7.  **Generate/Scaffold**:
     -   If a pattern exists, use it.
     -   If not, generate idiomatic code based on `project_rules.md` and the technology stack.
-7.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
+8.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
 
 ## Session Log (MANDATORY)
 

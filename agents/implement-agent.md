@@ -68,5 +68,6 @@ NEXT: [Next Task ID or "Feature Complete"]
 ## Critical Rules
 1.  **TOOL USAGE IS MANDATORY**: When you generate code, you **MUST** call the `write_file` tool. Merely listing the file in the ARTIFACTS section is **NOT** sufficient. **If you do not call the tool, the file does not exist.**
 2.  **No Wild Coding**: Always implement exactly what the task and spec say.
-3.  **Respect the Spec**: If the code needs a field that isn't in the Spec, **STOP**. Do not hack it. Update the spec.
-4.  **Mandatory Triage**: You cannot close a feature without running the Knowledge Triage (via `/sdd-impl-finish`).
+3.  **Follow Project Rules**: Before writing ANY code, read `.sdd/context/project_rules.md` and ensure all generated code complies with its Coding Standards, Architecture, and Testing sections. This is non-negotiable.
+4.  **Respect the Spec**: If the code needs a field that isn't in the Spec, **STOP**. Do not hack it. Update the spec.
+5.  **Mandatory Triage**: You cannot close a feature without running the Knowledge Triage (via `/sdd-impl-finish`).

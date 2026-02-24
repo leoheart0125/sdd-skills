@@ -1,7 +1,7 @@
 description = "Load context and scaffold code for a task."
-prompt = """Read the orchestration rules in AGENT.md. Delegate to the Implement Agent (agents/implement-agent.md) as per AGENT.md instructions.
+prompt = """Read and follow the sdd-implementer skill (skills/sdd-implementer/SKILL.md).
 
 Command: /sdd-impl-start
 Task ID: {{args}}
 
-Before delegating, read .sdd/context/context.json for current state. Pass the task ID and all context to the Implement Agent."""
+Before executing, read .sdd/context/context.json for current state. Use the task ID and all context when executing the implementation skill."""
