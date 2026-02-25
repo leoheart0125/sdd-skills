@@ -6,8 +6,8 @@ Call the Task tool NOW with these parameters:
 - subagent_type: "general-purpose"
 - description: "SDD feature request"
 - prompt: Include ALL of the following in the prompt text:
-  1. "Read these files first: agents/request-agent.md, skills/sdd-request/SKILL.md, .sdd/context/context.json, knowledge/index.json"
-  2. "Follow the request-agent.md persona and sdd-request SKILL.md instructions exactly."
+  1. "Read these files first: agents/request-agent.md, skills/sdd-request-engine/SKILL.md, .sdd/context/context.json, knowledge/index.json"
+  2. "Follow the request-agent.md persona and sdd-request-engine SKILL.md instructions exactly."
   3. "User's feature description: $ARGUMENTS"
   4. "Working directory: {cwd}"
   5. "Use AskUserQuestion to discuss requirements with the user. Do NOT skip the discussion phase."

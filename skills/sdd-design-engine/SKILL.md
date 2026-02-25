@@ -8,7 +8,7 @@ dependencies:
 
 # SDD Design Engine
 
-This skill consolidates the entire design phase into a unified, friction-free flow. It transforms a structured `request.md` (produced by `sdd-request`) into precise technical specifications through an automated pipeline with built-in **Ambiguity Resolution**.
+This skill consolidates the entire design phase into a unified, friction-free flow. It transforms a structured `request.md` (produced by `sdd-request-engine`) into precise technical specifications through an automated pipeline with built-in **Ambiguity Resolution**.
 
 ## Core Responsibilities
 
@@ -127,7 +127,7 @@ Before generating **any** design artifact (requirements, architecture, or API), 
 6.  If no matches found in the index, proceed normally without loading any knowledge files.
 
 ### 1. Requirements (formerly `sdd-requirements-engine`)
--   **Input**: `.sdd/spec/<feature-id>/request.md` (produced by `sdd-request`).
+-   **Input**: `.sdd/spec/<feature-id>/request.md` (produced by `sdd-request-engine`).
 -   **Action**: Transform structured user stories and acceptance criteria into technical requirements. Assign `confidence_score` to each requirement.
 -   **Clarify**: Run Ambiguity Resolution Protocol. Resolve all BLOCKING concerns.
 -   **Output**: `.sdd/spec/<feature-id>/requirements.json`.

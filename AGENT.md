@@ -155,7 +155,7 @@ Wait for user confirmation before executing.
 - Always read `context.json` before delegating to know the current stage
 - After a subagent completes, verify `context.json` was updated correctly
 - The source of truth for stage transitions:
-  - `init` → `request` (when feature starts via `/sdd-request`)
+  - `init` → `request` (when feature starts via `/sdd-request` using `sdd-request-engine`)
   - `request` → `request-complete` (Request Agent finishes `request.md`)
   - `request-complete` → `design` (when `/sdd-design` starts)
   - `design` → `design-complete` (Design Agent finishes all sub-stages)
@@ -185,7 +185,7 @@ These are **not** user-invocable slash commands. They are instruction labels use
 
 The full skill specifications are in `skills/` directory for reference:
 - `skills/sdd-system/SKILL.md` — initialization, status, lifecycle
-- `skills/sdd-request/SKILL.md` — requirement elicitation and spec generation
+- `skills/sdd-request-engine/SKILL.md` — requirement elicitation and spec generation
 - `skills/sdd-design-engine/SKILL.md` — design pipeline details
 - `skills/sdd-task-planner/SKILL.md` — planning logic details
 - `skills/sdd-implementer/SKILL.md` — implementation logic details

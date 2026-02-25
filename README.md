@@ -103,7 +103,7 @@ This project ships commands in two formats:
 ### Agents
 | Agent | Role | Description |
 |-------|------|-------------|
-| [`agents/request-agent.md`](./agents/request-agent.md) | **Product Manager** | Facilitates requirement discussions and produces structured `request.md` specs using `sdd-request`. |
+| [`agents/request-agent.md`](./agents/request-agent.md) | **Product Manager** | Facilitates requirement discussions and produces structured `request.md` specs using `sdd-request-engine`. |
 | [`agents/design-agent.md`](./agents/design-agent.md) | **Architect** | Handles requirements analysis, architecture design, and API specification using `sdd-design-engine`. |
 | [`agents/plan-agent.md`](./agents/plan-agent.md) | **Planner** | Converts specs into actionable tasks using `sdd-task-planner`. |
 | [`agents/implement-agent.md`](./agents/implement-agent.md) | **Builder** | Executes tasks, writes code, and runs tests using `sdd-implementer` and `sdd-guardrails`. |
@@ -112,7 +112,7 @@ This project ships commands in two formats:
 | Skill | Role | Description |
 |-------|------|-------------|
 | [`sdd-system`](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization (with optional project principles), feature management with auto-increment IDs, and global status. |
-| [`sdd-request`](./skills/sdd-request/SKILL.md) | **PM Core** | Interactive requirement elicitation — produces structured `request.md` with user stories, acceptance criteria, and scope. |
+| [`sdd-request-engine`](./skills/sdd-request-engine/SKILL.md) | **PM Core** | Interactive requirement elicitation — produces structured `request.md` with user stories, acceptance criteria, and scope. |
 | [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Transforms `request.md` into Requirements → Architecture → Object Design → API design with Ambiguity Resolution Protocol. |
 | [`sdd-knowledge-base`](./skills/sdd-knowledge-base/SKILL.md) | **Memory** | Central store for State, Design Patterns (tag-based), Lessons Learned (event-driven). |
 | [`sdd-guardrails`](./skills/sdd-guardrails/SKILL.md) | **Safety** | Continuous validation with programmatic rule enforcement at design, plan, and implementation stages. |

@@ -49,10 +49,10 @@ init → request → request-complete → design → design-complete → plan �
 ```
 
 ### Starting a Feature
-> **Executed by `sdd-request`** — see `sdd-request/SKILL.md` Step 2 for the canonical implementation.
+> **Executed by `sdd-request-engine`** — see `sdd-request-engine/SKILL.md` Step 2 for the canonical implementation.
 
 1.  User provides feature name/intent via `/sdd-request`.
-2.  `sdd-request` reads `context.json.feature_counter`, generates the feature ID, creates directories, and sets `current_stage` to `"request"`.
+2.  `sdd-request-engine` reads `context.json.feature_counter`, generates the feature ID, creates directories, and sets `current_stage` to `"request"`.
 
 ### Completing a Feature
 1.  All tasks in `tasks.json` reach `"done"` or `"verified"` status.

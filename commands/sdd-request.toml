@@ -1,5 +1,5 @@
 description = "Start a feature request conversation. Acts as a PM to discuss requirements and produce a structured spec."
-prompt = """Read and follow the sdd-request skill (skills/sdd-request/SKILL.md).
+prompt = """Read and follow the sdd-request-engine skill (skills/sdd-request-engine/SKILL.md).
 
 Command: /sdd-request
 User args: {{args}}

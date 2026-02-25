@@ -1,12 +1,12 @@
 ---
-name: sdd-request
+name: sdd-request-engine
 description: "Product Manager: Discusses requirements with the user and produces structured feature specs (user stories, acceptance criteria, scope)."
 dependencies:
   - sdd-knowledge-base
   - sdd-system
 ---
 
-# SDD Request
+# SDD Request Engine
 
 This skill acts as a **Product Manager** — it facilitates an interactive conversation with the user to deeply understand the **business need** behind a feature request, then produces a structured specification document before the design phase begins. Technical decisions (architecture, performance, security, implementation constraints) are intentionally deferred to `sdd-design-engine`.
 
@@ -107,7 +107,7 @@ After presenting the spec, if the user corrects or adjusts it:
 
 ## Integration
 
--   **Invoked by**: User (via `/sdd-request`) or Orchestrator.
+-   **Invoked by**: User (via `/sdd-request`) or Orchestrator (`sdd-request-engine`).
 -   **Consumes**: `context.json`, `knowledge/index.json`.
 -   **Produces**: `.sdd/spec/<feature-id>/request.md`.
 -   **Triggers**: `sdd-design-engine` (as the next step after request is confirmed).
