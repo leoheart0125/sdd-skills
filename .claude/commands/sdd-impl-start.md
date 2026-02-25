@@ -1,19 +1,20 @@
 <!-- Description: Load context and scaffold code for a task. -->
 
-CRITICAL: You MUST delegate this task to a subagent using the Task tool. Do NOT handle this yourself.
+You MUST perform exactly ONE action: call the Task tool. Do NOT read files, do NOT do anything else first.
 
-Instructions:
-1. Read `.sdd/context/context.json` for current state
-2. Read the agent prompt file at `agents/implement-agent.md`
-3. Read the skill spec at `skills/sdd-implementer/SKILL.md`
-4. Use the **Task tool** (subagent_type: "general-purpose") to spawn a subagent with a prompt that includes:
-   - The full content of `agents/implement-agent.md` as the agent's persona
-   - The full content of `skills/sdd-implementer/SKILL.md` as the skill instructions
-   - Current context from `context.json`
-   - The task ID (below)
-   - The working directory path
-5. If the subagent returns SPEC_DRIFT, inform the user and delegate to Design Agent via `/sdd-spec-update`.
-6. If the subagent returns BLOCKING_CONCERNS, relay to the user, collect answers, and **resume** the subagent.
-7. When the subagent completes, relay results and suggest `/sdd-impl-finish` or the next task.
+Call the Task tool NOW with these parameters:
+- subagent_type: "general-purpose"
+- description: "SDD impl start"
+- prompt: Include ALL of the following in the prompt text:
+  1. "Read these files first: agents/implement-agent.md, skills/sdd-implementer/SKILL.md, .sdd/context/context.json"
+  2. "Follow the implement-agent.md persona and sdd-implementer SKILL.md instructions exactly."
+  3. "Task ID: $ARGUMENTS"
+  4. "Working directory: {cwd}"
+  5. "This is the START phase — load context and scaffold code for the task."
+  6. "If you detect SPEC_DRIFT, report it clearly so the user can run /sdd-spec-update."
 
-Task ID: $ARGUMENTS
+Do NOT run in background — the subagent needs to interact with the user.
+After the subagent finishes:
+- If it reports SPEC_DRIFT, inform the user and suggest `/sdd-spec-update`.
+- If it reports BLOCKING_CONCERNS, relay to user, collect answers, then resume the subagent using the `resume` parameter.
+- Otherwise, relay results and suggest `/sdd-impl-finish` or the next task.

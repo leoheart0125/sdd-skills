@@ -1,19 +1,20 @@
 <!-- Description: Main entry point for SDD design. -->
 
-CRITICAL: You MUST delegate this task to a subagent using the Task tool. Do NOT handle this yourself.
+You MUST perform exactly ONE action: call the Task tool. Do NOT read files, do NOT do anything else first.
 
-Instructions:
-1. Read `.sdd/context/context.json` to get `current_feature` and `current_stage`
-2. If no active feature, ask the user for a feature name first, create the feature directory
-3. Read the agent prompt file at `agents/design-agent.md`
-4. Read the skill spec at `skills/sdd-design-engine/SKILL.md`
-5. Use the **Task tool** (subagent_type: "general-purpose") to spawn a subagent with a prompt that includes:
-   - The full content of `agents/design-agent.md` as the agent's persona
-   - The full content of `skills/sdd-design-engine/SKILL.md` as the skill instructions
-   - Current context from `context.json`
-   - The user's arguments (below)
-   - The working directory path
-6. If the subagent returns BLOCKING_CONCERNS or NEEDS_CLARIFICATION, relay to the user, collect answers, and **resume** the subagent (using `resume` parameter with the agent ID).
-7. When the subagent completes, relay results and suggest `/sdd-plan`.
+Call the Task tool NOW with these parameters:
+- subagent_type: "general-purpose"
+- description: "SDD design phase"
+- prompt: Include ALL of the following in the prompt text:
+  1. "Read these files first: agents/design-agent.md, skills/sdd-design-engine/SKILL.md, .sdd/context/context.json"
+  2. "Follow the design-agent.md persona and sdd-design-engine SKILL.md instructions exactly."
+  3. "If no active feature in context.json, use AskUserQuestion to ask the user for a feature name."
+  4. "User args: $ARGUMENTS"
+  5. "Working directory: {cwd}"
+  6. "Use AskUserQuestion for any clarifications needed."
+  7. "If you encounter BLOCKING_CONCERNS, report them clearly so they can be relayed to the user."
 
-User args: $ARGUMENTS
+Do NOT run in background — the subagent needs to interact with the user.
+After the subagent finishes:
+- If it reports BLOCKING_CONCERNS or NEEDS_CLARIFICATION, relay to user, collect answers, then resume the subagent using the `resume` parameter.
+- Otherwise, relay results and suggest `/sdd-plan`.

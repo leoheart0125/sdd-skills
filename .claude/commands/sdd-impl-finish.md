@@ -1,18 +1,17 @@
 <!-- Description: Mark task complete and enforce knowledge extraction. -->
 
-CRITICAL: You MUST delegate this task to a subagent using the Task tool. Do NOT handle this yourself.
+You MUST perform exactly ONE action: call the Task tool. Do NOT read files, do NOT do anything else first.
 
-Instructions:
-1. Read `.sdd/context/context.json` for current state
-2. Read the agent prompt file at `agents/implement-agent.md`
-3. Read the skill spec at `skills/sdd-implementer/SKILL.md`
-4. Use the **Task tool** (subagent_type: "general-purpose") to spawn a subagent with a prompt that includes:
-   - The full content of `agents/implement-agent.md` as the agent's persona
-   - The full content of `skills/sdd-implementer/SKILL.md` as the skill instructions
-   - Current context from `context.json`
-   - The user's arguments (below)
-   - The working directory path
-5. IMPORTANT: When the subagent returns with STATUS: KNOWLEDGE_TRIAGE, present the triage table to the user and wait for confirmation before **resuming** the subagent with the confirmed actions.
-6. When the subagent completes, relay results to the user.
+Call the Task tool NOW with these parameters:
+- subagent_type: "general-purpose"
+- description: "SDD impl finish"
+- prompt: Include ALL of the following in the prompt text:
+  1. "Read these files first: agents/implement-agent.md, skills/sdd-implementer/SKILL.md, .sdd/context/context.json"
+  2. "Follow the implement-agent.md persona and sdd-implementer SKILL.md instructions exactly."
+  3. "User args: $ARGUMENTS"
+  4. "Working directory: {cwd}"
+  5. "This is the FINISH phase — mark task complete and enforce knowledge extraction."
+  6. "When you reach KNOWLEDGE_TRIAGE status, present the triage table to the user via AskUserQuestion and wait for confirmation before proceeding."
 
-User args: $ARGUMENTS
+Do NOT run in background — the subagent needs to interact with the user.
+After the subagent finishes, relay results to the user.
