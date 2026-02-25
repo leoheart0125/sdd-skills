@@ -1,7 +1,7 @@
-description = "Load context and scaffold code for a task."
+description = "Load context and scaffold code for tasks. No args = all pending tasks; with task ID = single task."
 prompt = """Read and follow the sdd-implementer skill (skills/sdd-implementer/SKILL.md).
 
 Command: /sdd-impl-start
-Task ID: {{args}}
+Task ID (optional): {{args}}
 
-Before executing, read .sdd/context/context.json for current state. Use the task ID and all context when executing the implementation skill."""
+Before executing, read .sdd/context/context.json for current state. If no task ID is provided, execute all pending tasks in dependency order (batch mode). If a task ID is provided, execute only that task."""

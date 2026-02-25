@@ -54,7 +54,7 @@ Acts as a **Product Manager** — discusses requirements interactively, asks cla
 ```bash
 /sdd-design
 ```
-Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, and defines the API spec.
+Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, object/class design, and defines the API spec.
 *Shortcuts:* `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-api`
 
 **Phase 2: Plan (Plan Agent)**
@@ -65,9 +65,9 @@ Reads `project_rules.md` first, then generates an implementation plan with concr
 
 **Phase 3: Implement (Implement Agent)**
 ```bash
-/sdd-impl-start <TASK-ID>
+/sdd-impl-start
 ```
-Scaffolds code from templates (matched by tags) at the task's `target_path`.
+Executes all pending tasks in dependency order. Scaffolds code from templates (matched by tags) at each task's `target_path`. Optionally pass a task ID (`/sdd-impl-start <TASK-ID>`) to implement a single task.
 
 ```bash
 /sdd-impl-finish
@@ -113,7 +113,7 @@ This project ships commands in two formats:
 |-------|------|-------------|
 | [`sdd-system`](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization (with optional project principles), feature management with auto-increment IDs, and global status. |
 | [`sdd-request`](./skills/sdd-request/SKILL.md) | **PM Core** | Interactive requirement elicitation — produces structured `request.md` with user stories, acceptance criteria, and scope. |
-| [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Transforms `request.md` into Requirements -> Architecture -> API design with Ambiguity Resolution Protocol. |
+| [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Transforms `request.md` into Requirements → Architecture → Object Design → API design with Ambiguity Resolution Protocol. |
 | [`sdd-knowledge-base`](./skills/sdd-knowledge-base/SKILL.md) | **Memory** | Central store for State, Design Patterns (tag-based), Lessons Learned (event-driven). |
 | [`sdd-guardrails`](./skills/sdd-guardrails/SKILL.md) | **Safety** | Continuous validation with programmatic rule enforcement at design, plan, and implementation stages. |
 | [`sdd-task-planner`](./skills/sdd-task-planner/SKILL.md) | **Planning Core** | Generates implementation plans with rule-aware `target_path` validation and pattern matching by tags. |

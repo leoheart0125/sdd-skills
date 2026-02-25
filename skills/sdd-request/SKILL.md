@@ -8,7 +8,7 @@ dependencies:
 
 # SDD Request
 
-This skill acts as a **Product Manager** — it facilitates an interactive conversation with the user to deeply understand a feature request, then produces a structured specification document before the design phase begins.
+This skill acts as a **Product Manager** — it facilitates an interactive conversation with the user to deeply understand the **business need** behind a feature request, then produces a structured specification document before the design phase begins. Technical decisions (architecture, performance, security, implementation constraints) are intentionally deferred to `sdd-design-engine`.
 
 ## Core Responsibilities
 
@@ -43,16 +43,16 @@ Before starting the conversation, gather context efficiently:
 
 ### Step 3: Interactive Discussion
 
-Engage the user in a structured PM conversation:
+Engage the user in a structured PM conversation focused **exclusively on business requirements**. Do NOT ask about technology, architecture, performance, security, or implementation details — those are the design phase's responsibility.
 
 1.  **Summarize Understanding**: Restate the user's intent in your own words to confirm alignment.
 2.  **Ask Clarifying Questions**: Use targeted questions grouped by category:
-    -   **Who**: Who are the users? What roles/permissions are involved?
-    -   **What**: What exactly should the feature do? What's the expected behavior?
-    -   **Why**: What problem does this solve? What's the business value?
-    -   **Boundaries**: What is explicitly out of scope? What MVP looks like?
-    -   **Constraints**: Performance requirements? Security considerations? Compatibility?
-    -   **Dependencies**: Does this depend on other features? Does anything depend on this?
+    -   **Who**: Who are the users? What roles/personas are involved? Who benefits from this?
+    -   **What**: What exactly should the feature do from the user's perspective? What's the expected behaviour?
+    -   **Why**: What problem does this solve? What's the business value or goal?
+    -   **Boundaries**: What is explicitly out of scope? What does the MVP look like vs future phases?
+    -   **Success Criteria**: How do we know this feature is successful? Are there measurable outcomes?
+    -   **Priority & Urgency**: Is there a deadline or business driver? What's the impact if this is delayed?
 3.  **Iterate**: If answers reveal new ambiguities, ask follow-up questions. Continue until the user confirms the scope is clear.
 
 > **IMPORTANT**: Do NOT proceed to spec generation until the user explicitly confirms the scope is clear. Present a scope summary and ask for confirmation.
@@ -83,16 +83,11 @@ Brief description of the feature and its purpose.
 ## Out of Scope
 - Items explicitly excluded from this feature.
 
-## Constraints & Assumptions
-- Performance: ...
-- Security: ...
+## Assumptions
 - Assumptions made during discussion.
 
-## Dependencies
-- Features or systems this depends on.
-
 ## Open Questions
-- Any remaining items to resolve during design phase.
+- Business or scope questions remaining to resolve (technical questions will be addressed in the design phase).
 ```
 
 ### Step 5: User Confirmation

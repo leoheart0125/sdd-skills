@@ -1,7 +1,8 @@
 ---
 name: sdd-guardrails
 description: "Continuous validation running inside every stage to prevent errors early. 'Guardrails, not Gates'."
-dependencies: []
+dependencies:
+  - sdd-knowledge-base
 ---
 
 # SDD Guardrails

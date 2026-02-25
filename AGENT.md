@@ -43,6 +43,7 @@ User ↔ Orchestrator (you) (Delegate via Task tool)
 | `/sdd-design` | User intent, feature args |
 | `/sdd-design-requirements` | Force requirements analysis |
 | `/sdd-design-architecture` | Force architecture design |
+| `/sdd-design-objects` | Force object/class design |
 | `/sdd-design-api` | Force API design |
 | `/sdd-spec-update` | Drift description from Implement Agent or user |
 
@@ -57,7 +58,7 @@ User ↔ Orchestrator (you) (Delegate via Task tool)
 
 | Command | Context to Pass |
 |---------|-----------------|
-| `/sdd-impl-start` | Task ID to implement |
+| `/sdd-impl-start` | Task ID (optional). No args = all pending tasks |
 | `/sdd-impl-finish` | Trigger verification + knowledge extraction |
 | `/sdd-impl-fix` | Guardrail violation details |
 
@@ -125,6 +126,8 @@ Subagents **cannot directly interact with the user**. When a subagent needs user
 
 ## Knowledge Triage (for direct commands)
 
+> Full protocol defined in `sdd-knowledge-base/SKILL.md`. Summary below for quick reference.
+
 When handling `/sdd-learn`, `/sdd-pattern-save`, or knowledge from `/sdd-impl-finish`:
 
 ### Step 1: Dedup
@@ -156,10 +159,27 @@ Wait for user confirmation before executing.
   - `request` → `request-complete` (Request Agent finishes `request.md`)
   - `request-complete` → `design` (when `/sdd-design` starts)
   - `design` → `design-complete` (Design Agent finishes all sub-stages)
-  - `design-complete` → `plan-complete` (Plan Agent finishes)
+  - `design-complete` → `plan` (when `/sdd-plan` starts)
+  - `plan` → `plan-complete` (Plan Agent finishes)
   - `plan-complete` → `impl` (when first task starts)
   - `impl` → `impl-complete` (all tasks done)
   - `impl-complete` → `init` (after `/sdd-impl-finish` archival)
+
+## Command Classification
+
+### User-Facing Commands (have TOML definitions)
+`/sdd-init`, `/sdd-status`, `/sdd-nuke`, `/sdd-request`, `/sdd-design`, `/sdd-plan`, `/sdd-impl-start`, `/sdd-impl-finish`, `/sdd-rule-update`
+
+### Internal Commands (no TOML — used within agent prompts and skill workflows only)
+These are **not** user-invocable slash commands. They are instruction labels used in skill/agent prompts to describe workflow steps:
+- `/sdd-save`, `/sdd-load` — context persistence (handled directly by orchestrator)
+- `/sdd-learn`, `/sdd-pattern-save` — knowledge recording (handled directly by orchestrator)
+- `/sdd-guard-check`, `/sdd-guard-drift`, `/sdd-guard-report` — guardrail checks (invoked internally by skills)
+- `/sdd-spec-update` — spec drift handling (delegated to Design Agent)
+- `/sdd-impl-fix` — guardrail fix (delegated to Implement Agent)
+- `/sdd-plan-optimize` — task re-sorting (delegated to Plan Agent)
+- `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-objects`, `/sdd-design-api` — design sub-stage entry points (delegated to Design Agent)
+- `/sdd-knowledge-reindex` — index rebuild (handled directly by orchestrator)
 
 ## Skill Reference
 

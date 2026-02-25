@@ -14,7 +14,7 @@ This skill is the entry point for the Compounding Engineering framework. It hand
 1.  **Project Initialization**: Setup `.sdd/` directory, `project_rules.md`, and Knowledge Base directories.
 2.  **Feature Lifecycle**: Manage features from creation through request → design → plan → impl → complete → learn.
 3.  **Global Status**: Display the "Big Picture" (Current Stage + Active Feature + Velocity + Knowledge Stats).
-4.  **Coordination**: Ensure other skills (Design, Guardrails, Planner) are installed and healthy.
+4.  **Coordination**: Verify `.sdd/` directory structure integrity (all required subdirectories and `context.json` exist and are well-formed).
 
 ## Commands
 
@@ -49,13 +49,10 @@ init → request → request-complete → design → design-complete → plan �
 ```
 
 ### Starting a Feature
-1.  User provides feature name/intent.
-2.  Read `context.json.feature_counter` (e.g., `"001"`).
-3.  Generate feature ID: `<counter>-<feature-name>` (e.g., `001-user-auth`).
-4.  Set `context.json.current_feature` to the generated feature ID.
-5.  Increment `feature_counter` (e.g., `"001"` → `"002"`).
-6.  Create directory: `.sdd/spec/<feature-id>/` and `.sdd/plan/<feature-id>/`.
-7.  Set `context.json.current_stage` to `"design"`.
+> **Executed by `sdd-request`** — see `sdd-request/SKILL.md` Step 2 for the canonical implementation.
+
+1.  User provides feature name/intent via `/sdd-request`.
+2.  `sdd-request` reads `context.json.feature_counter`, generates the feature ID, creates directories, and sets `current_stage` to `"request"`.
 
 ### Completing a Feature
 1.  All tasks in `tasks.json` reach `"done"` or `"verified"` status.

@@ -22,7 +22,7 @@ You have access to the following skills. You **MUST** use them to perform your t
 
 ### 1. SDD Implementer (`sdd-implementer`)
 The core engine for execution.
--   **Start Task**: `/sdd-impl-start <task-id>` (Context load -> Pattern lookup -> Code gen)
+-   **Start Task**: `/sdd-impl-start [task-id]` (No args = batch all pending tasks; with ID = single task)
 -   **Finish Feature**: `/sdd-impl-finish` (Verification -> Knowledge Extraction -> Archival)
 -   **Fix Issue**: `/sdd-impl-fix` (When guardrails fail)
 
@@ -43,8 +43,8 @@ For handling spec updates.
 ## Workflow
 
 1.  **Start Implementation**:
-    -   User selects a task (or you pick the next available).
-    -   Call `/sdd-impl-start <task-id>`.
+    -   Call `/sdd-impl-start` to execute all pending tasks (batch mode), or `/sdd-impl-start <task-id>` for a specific task.
+    -   In batch mode, tasks are executed sequentially in dependency order.
 2.  **Verify & Fix**:
     -   After code generation, the skill runs guardrails.
     -   If failure: Call `/sdd-impl-fix`.

@@ -19,13 +19,24 @@ This skill handles the "last mile" of development. It focuses on speed and consi
 
 ## Commands
 
--   `/sdd-impl-start <task-id>`: Load context and scaffold code.
+-   `/sdd-impl-start [task-id]`: Load context and scaffold code. If `task-id` is omitted, executes **all** pending tasks in dependency order. If `task-id` is provided, executes only the specified task.
 -   `/sdd-impl-finish`: Mark task complete, trigger auto-verification, and enforce knowledge extraction.
 -   `/sdd-impl-fix`: Request a fix for a failed guardrail check.
 
 ## Scaffolding Logic
 
 When `/sdd-impl-start` is called:
+
+### Execution Mode Resolution
+-   **If `task-id` is provided**: Execute scaffolding for that single task (steps below).
+-   **If `task-id` is omitted (batch mode)**:
+    1.  Read `.sdd/plan/<feature-id>/tasks.json`.
+    2.  Filter tasks where `status` is NOT `"done"` and NOT `"verified"`.
+    3.  Sort remaining tasks by dependency order (tasks with no unresolved dependencies first).
+    4.  Execute the scaffolding flow below **for each task sequentially**.
+    5.  After completing each task, log progress (e.g., "Task 3/5 complete") and proceed to the next automatically.
+
+### Per-Task Scaffolding Flow
 1.  **Read Project Rules (MANDATORY FIRST STEP)**:
     1.  Load `project_rules.md` from `.sdd/context/`.
     2.  Extract **Coding Standards** (naming conventions, function size, documentation rules).
@@ -44,7 +55,7 @@ When `/sdd-impl-start` is called:
 
 ## Session Log (MANDATORY)
 
-After completing each task, or when the user provides feedback/corrections during implementation, **append** an entry to `.sdd/logs/session.md` with:
+After completing each task, or when the user provides feedback/corrections during implementation, **append** an entry to `.sdd/logs/session.md` (see `templates/session.md` for format) with:
 -   Timestamp and task ID
 -   What was done or changed
 -   Any user feedback or corrections applied
@@ -63,11 +74,13 @@ If the developer (or agent) realizes the `openapi.yaml` is missing a field durin
 
 ## Task Completion Behavior
 
-After each task is implemented via `/sdd-impl-start`:
+After each task is implemented:
 1.  Update the task's status to `done` in `tasks.json`.
 2.  Append the session log entry as described above.
 3.  Inform the user of progress (e.g., "Task 3/5 complete").
-4.  **Do NOT auto-trigger the finish flow.** The verification, knowledge extraction, and archival steps below are ONLY executed when the user explicitly calls `/sdd-impl-finish`.
+4.  **In batch mode**: Automatically proceed to the next pending task.
+5.  **In single-task mode**: Stop after the specified task.
+6.  **Do NOT auto-trigger the finish flow.** The verification, knowledge extraction, and archival steps below are ONLY executed when the user explicitly calls `/sdd-impl-finish`.
 
 ## Completion & Mandatory Knowledge Extraction
 
@@ -78,6 +91,7 @@ When `/sdd-impl-finish` is called:
 ### Step 1: Verification
 1.  Run guardrail checks (`/sdd-guard-check code`) on all implemented files.
 2.  Verify all tasks for the feature have status `done` or `verified`.
+3.  **Only after both checks pass**, set `context.json.current_stage` to `"impl-complete"`. This is the sole trigger for `impl-complete` — it is NOT set automatically when tasks finish.
 
 ### Step 2: Knowledge Extraction (MANDATORY)
 Instead of asking "would you like to save patterns?", the agent **auto-generates drafts**, triages them, and presents for user confirmation:
@@ -94,18 +108,7 @@ Instead of asking "would you like to save patterns?", the agent **auto-generates
     -   Were there user corrections during clarification?
     -   For each gap, generate a draft lesson.
 
-4.  **Knowledge Triage** (MANDATORY — see `sdd-knowledge-base` for full protocol):
-    -   **Dedup**: Check `index.json` for existing entries with overlapping tags and semantics. Merge instead of duplicating.
-    -   **Specificity Check**: Classify each draft as project-wide → promote to `project_rules.md`, domain-specific → save, or feature-specific → skip.
-    -   **Present triage table** to user with proposed action (MERGE / PROMOTE / SAVE / SKIP) and reason for each draft.
-    -   User confirms, edits, or overrides each action.
-
-5.  **Execute Confirmed Actions**:
-    -   MERGE → Update existing entry in-place + update `index.json`.
-    -   PROMOTE → Append to `project_rules.md` via `/sdd-rule-update`. Do NOT save as pattern/lesson.
-    -   SAVE → Write new file + add entry to `index.json`.
-    -   SKIP → Discard (archived naturally with the feature).
-    -   Update `context.json.active_patterns` and `context.json.applied_lessons`.
+4.  **Knowledge Triage** (MANDATORY): Execute the full Knowledge Triage protocol as defined in `sdd-knowledge-base/SKILL.md` (Steps 1–4: Dedup → Specificity Check → Present triage table → Execute confirmed actions). Update `context.json.active_patterns` and `context.json.applied_lessons`.
 
 ### Step 3: Feature Archival
 1.  **MOVE** (not copy) `.sdd/spec/<feature-id>/` and `.sdd/plan/<feature-id>/` into `.sdd/features/<feature-id>/spec/` and `.sdd/features/<feature-id>/plan/`.

@@ -1,0 +1,58 @@
+{
+    "feature": "{{ feature_id }}",
+    "classes": [
+        {
+            "name": "ClassName",
+            "layer": "domain | application | infrastructure",
+            "responsibility": "Brief description of class responsibility",
+            "properties": [
+                {
+                    "name": "propertyName",
+                    "type": "Type",
+                    "visibility": "public | private | protected"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "methodName",
+                    "params": [
+                        {
+                            "name": "paramName",
+                            "type": "Type"
+                        }
+                    ],
+                    "returnType": "ReturnType",
+                    "visibility": "public | private | protected",
+                    "description": "What this method does"
+                }
+            ]
+        }
+    ],
+    "interfaces": [
+        {
+            "name": "IInterfaceName",
+            "layer": "domain | application",
+            "purpose": "Why this abstraction exists",
+            "methods": [
+                {
+                    "name": "methodName",
+                    "params": [
+                        {
+                            "name": "paramName",
+                            "type": "Type"
+                        }
+                    ],
+                    "returnType": "ReturnType"
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "from": "SourceClass",
+            "to": "TargetClass",
+            "type": "dependency | implementation | composition | inheritance | association",
+            "description": "Why this relationship exists"
+        }
+    ]
+}
