@@ -40,7 +40,9 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 
 ### 3. Implementation Checks (Called by `sdd-implementer`)
 -   **Linting**: "Does code follow project style?"
--   **Spec Match**: "Does the endpoint accept the defined DTO?"
+-   **Spec Match**: "Does the endpoint accept the defined DTO?" — Validate against `openapi.yaml` request/response schemas.
+-   **Object Design Match**: "Do implemented classes match `object_design.json`?" — Verify class names, method signatures, properties, and layer placement.
+-   **Schema Match**: "Do data-layer implementations match `data_api.json`?" — Verify entity fields, types, and relationships.
 -   **Test Coverage**: "Are tests generated for this task?"
 -   **File Placement**: "Is the file at the `target_path` specified in `tasks.json`?"
 -   **Rule Compliance**: "Does the generated code follow Coding Standards, Architecture patterns, and naming conventions declared in `project_rules.md`?" — If violations found, raise as failure and fix before proceeding.
@@ -80,11 +82,12 @@ The guardrail check procedure:
 ## Drift Detection Logic
 
 When `/sdd-guard-drift` is called:
-1.  Parse `openapi.yaml` from `.sdd/spec/<feature-id>/`.
-2.  Parse implemented Controller/Handler code.
-3.  Compare:
-    -   Parameters (Name, Type, Required)
-    -   Responses (Code, Schema)
+1.  Parse spec artifacts from `.sdd/spec/<feature-id>/`: `openapi.yaml`, `object_design.json`, `data_api.json`.
+2.  Parse implemented code (Controllers, Services, Repositories, Entities).
+3.  Compare against each spec:
+    -   `object_design.json`: Class names, method signatures, properties, layer assignments.
+    -   `data_api.json`: Entity fields, types, relationships vs DB schemas/models.
+    -   `openapi.yaml`: Parameters (Name, Type, Required), Responses (Code, Schema).
 4.  If mismatch found → Report Drift → Recommend `/sdd-spec-update` or Implementation Fix.
 
 ## Lesson Trigger Protocol

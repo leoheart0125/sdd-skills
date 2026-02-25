@@ -46,12 +46,26 @@ When `/sdd-impl-start` is called:
 2.  Check Task Type (e.g., "Create Endpoint").
 3.  **Check Context**: Read `.sdd/context/context.json` to determine Language, Framework, and `current_feature`.
 4.  **Read Task**: Load from `.sdd/plan/<feature-id>/tasks.json` using the task ID.
-5.  **Validate Target Path**: Ensure the task's `target_path` follows `project_rules.md` conventions.
-6.  **Query Knowledge Base (Index-Based)**: Read `.sdd/knowledge/index.json`, filter `patterns` by tags matching the current task's domain and stack. Load ONLY the matched pattern files. Do NOT scan the full `patterns/` directory.
-7.  **Generate/Scaffold**:
-    -   If a pattern exists, use it.
-    -   If not, generate idiomatic code based on `project_rules.md` and the technology stack.
-8.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
+5.  **Read Design Spec (MANDATORY)**: Load the following spec artifacts from `.sdd/spec/<feature-id>/` and identify elements relevant to this task:
+    -   `object_design.json` — class/interface definitions, properties, method signatures, relationships.
+    -   `architecture.json` — component boundaries, layer structure, data flow direction.
+    -   `data_api.json` — DB entity schemas, field types, relationships, API endpoint definitions.
+    -   `openapi.yaml` — exact API contracts (request/response schemas, status codes, validation rules).
+    The generated code MUST:
+    -   Use the exact class/interface names defined in `object_design.json`.
+    -   Implement all properties and method signatures as specified.
+    -   Respect the `layer` assignment (domain, application, infrastructure).
+    -   Maintain the relationships (dependency, composition, implementation, etc.) as defined.
+    -   Follow component boundaries and data flow direction from `architecture.json`.
+    -   Match DB entity fields/types/relationships from `data_api.json` for data-layer code.
+    -   Match endpoint signatures, request/response schemas from `openapi.yaml` for API-layer code.
+    -   If a task maps to no class in `object_design.json`, proceed without constraint but log a warning in the session log.
+6.  **Validate Target Path**: Ensure the task's `target_path` follows `project_rules.md` conventions.
+7.  **Query Knowledge Base (Index-Based)**: Read `.sdd/knowledge/index.json`, filter `patterns` by tags matching the current task's domain and stack. Load ONLY the matched pattern files. Do NOT scan the full `patterns/` directory.
+8.  **Generate/Scaffold**:
+    -   If a pattern exists, use it as a base, but override with the design spec (class names, API contracts, DB schemas) from Step 5.
+    -   If not, generate idiomatic code based on the design spec from Step 5, `project_rules.md`, and the technology stack.
+9.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
 
 ## Session Log (MANDATORY)
 
@@ -65,7 +79,7 @@ This log **persists across sessions** and is the primary input for knowledge ext
 
 ## Feedback Loop (Drift Management)
 
-If the developer (or agent) realizes the `openapi.yaml` is missing a field during implementation:
+If the developer (or agent) realizes any spec artifact (`openapi.yaml`, `object_design.json`, `data_api.json`) is missing a field or has an inconsistency during implementation:
 1.  **Do NOT** just hack the code.
 2.  Call `/sdd-spec-update` (via `sdd-design-engine`).
 3.  Wait for Spec update.
@@ -129,5 +143,5 @@ These are recorded immediately via `/sdd-learn` (which applies Knowledge Triage 
 
 ## Integration
 
--   **Consumes**: `.sdd/plan/<feature-id>/tasks.json`, `project_rules.md`, `knowledge/patterns` (by tags).
+-   **Consumes**: `.sdd/plan/<feature-id>/tasks.json`, `.sdd/spec/<feature-id>/*` (`object_design.json`, `architecture.json`, `data_api.json`, `openapi.yaml`), `project_rules.md`, `knowledge/patterns` (by tags).
 -   **Invokes**: `sdd-guardrails` (for verification), `sdd-design-engine` (for spec updates), `sdd-knowledge-base` (for pattern/lesson saving).

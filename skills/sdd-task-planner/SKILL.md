@@ -42,7 +42,12 @@ When `/sdd-plan` is called:
 
 ### Step 3: Analyze Feature Context
 1.  Read `context.json` — get `current_feature`, `architecture_style`, `project_structure_convention`.
-2.  Read spec from `.sdd/spec/<feature-id>/`.
+2.  Read ALL spec artifacts from `.sdd/spec/<feature-id>/`:
+    -   `requirements.json` — functional/non-functional requirements and constraints.
+    -   `architecture.json` — components, data flow, architectural decisions.
+    -   `object_design.json` — classes, interfaces, relationships.
+    -   `data_api.json` — DB entity schemas and API endpoint definitions.
+    -   `openapi.yaml` — API contract (request/response schemas).
 
 ### Step 4: Pre-Plan Clarification
 Before generating tasks, check for concerns:
@@ -56,11 +61,15 @@ Present BLOCKING concerns to user and **STOP**. Wait for user resolution. Skip i
 -   **If Pattern Match Found**:
     -   Load Pattern Task List.
     -   Replace placeholders (e.g., `{{Entity}}` → `User`).
+    -   Cross-reference with spec artifacts to ensure all requirements, classes, endpoints, and entities are covered.
     -   Adjust `target_path` to match `project_rules.md` conventions.
     -   Output `tasks.json`.
 -   **If No Match**:
-    -   Parse spec artifacts (`openapi.yaml`, `architecture.json`).
+    -   Parse ALL spec artifacts (`requirements.json`, `architecture.json`, `object_design.json`, `data_api.json`, `openapi.yaml`).
     -   Identify Endpoints, Models, Services.
+    -   Map each class/interface from `object_design.json` to a task, ensuring class names, method signatures, and layer placement are preserved in the task description.
+    -   Map each entity from `data_api.json` to a data-layer task (migration, repository, etc.).
+    -   Verify every functional requirement in `requirements.json` is addressed by at least one task.
     -   Generate `target_path` for each task based on project rules.
     -   Generate fresh `tasks.json`.
 
@@ -99,6 +108,6 @@ This is NOT optional. Every user adjustment to the plan MUST be recorded as a le
 
 ## Integration
 
--   **Input**: `context.json`, `project_rules.md`, `.sdd/spec/<feature-id>/*`, `sdd-knowledge-base`.
+-   **Input**: `context.json`, `project_rules.md`, `.sdd/spec/<feature-id>/*` (`requirements.json`, `architecture.json`, `object_design.json`, `data_api.json`, `openapi.yaml`), `sdd-knowledge-base`.
 -   **Output**: `.sdd/plan/<feature-id>/tasks.json` (consumed by `sdd-implementer`).
 -   **Invokes**: `sdd-guardrails` (plan-level checks).
