@@ -62,10 +62,22 @@ When `/sdd-impl-start` is called:
     -   If a task maps to no class in `object_design.json`, proceed without constraint but log a warning in the session log.
 6.  **Validate Target Path**: Ensure the task's `target_path` follows `project_rules.md` conventions.
 7.  **Query Knowledge Base (Index-Based)**: Read `.sdd/knowledge/index.json`, filter `patterns` by tags matching the current task's domain and stack. Load ONLY the matched pattern files. Do NOT scan the full `patterns/` directory.
-8.  **Generate/Scaffold**:
+8.  **Output the knowledge match results** before generating code:
+
+```
+📚 **Knowledge Loaded** (stage: impl)
+
+| Type | ID | Matched Tags | Summary |
+|------|----|-------------|---------|
+| <type> | <id> | `<tag1>`, `<tag2>` | <summary> |
+
+> No knowledge matched. (if empty)
+```
+
+9.  **Generate/Scaffold**:
     -   If a pattern exists, use it as a base, but override with the design spec (class names, API contracts, DB schemas) from Step 5.
     -   If not, generate idiomatic code based on the design spec from Step 5, `project_rules.md`, and the technology stack.
-9.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
+10.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
 
 ## Session Log (MANDATORY)
 

@@ -31,6 +31,17 @@ Before starting the conversation, gather context efficiently:
 2.  Read `.sdd/knowledge/index.json` — filter entries whose `tags` overlap with the feature description keywords.
 3.  Load ONLY the matched knowledge files (via the `file` path in each index entry). Do NOT scan full directories.
 4.  Do NOT load all past `request.md` files — only load a specific one if a matched knowledge entry references it.
+5.  **Output the knowledge match results** before proceeding:
+
+```
+📚 **Knowledge Loaded** (stage: request)
+
+| Type | ID | Matched Tags | Summary |
+|------|----|-------------|---------|
+| <type> | <id> | `<tag1>`, `<tag2>` | <summary> |
+
+> No knowledge matched. (if empty)
+```
 
 ### Step 2: Feature ID Assignment
 

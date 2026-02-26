@@ -125,6 +125,17 @@ Before generating **any** design artifact (requirements, architecture, or API), 
 4.  Load ONLY the matched files (via the `file` path in each index entry). Do NOT scan the full `patterns/` or `lessons/` directories.
 5.  Summarize relevant findings and incorporate them into the design output.
 6.  If no matches found in the index, proceed normally without loading any knowledge files.
+7.  **Output the knowledge match results** before proceeding to the design pipeline:
+
+```
+📚 **Knowledge Loaded** (stage: design)
+
+| Type | ID | Matched Tags | Summary |
+|------|----|-------------|---------|
+| <type> | <id> | `<tag1>`, `<tag2>` | <summary> |
+
+> No knowledge matched. (if empty)
+```
 
 ### 1. Requirements (formerly `sdd-requirements-engine`)
 -   **Input**: `.sdd/spec/<feature-id>/request.md` (produced by `sdd-request-engine`).

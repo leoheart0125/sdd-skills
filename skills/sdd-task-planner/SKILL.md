@@ -39,6 +39,17 @@ When `/sdd-plan` is called:
 3.  Filter `lessons` entries whose `tags` match OR whose `trigger` matches `"planning-*"` or the current feature's domain.
 4.  Load ONLY the matched files (via the `file` path in each index entry). Do NOT scan the full `patterns/` or `lessons/` directories.
 5.  Summarize relevant findings — reuse proven strategies and avoid past mistakes.
+6.  **Output the knowledge match results** before proceeding:
+
+```
+📚 **Knowledge Loaded** (stage: plan)
+
+| Type | ID | Matched Tags | Summary |
+|------|----|-------------|---------|
+| <type> | <id> | `<tag1>`, `<tag2>` | <summary> |
+
+> No knowledge matched. (if empty)
+```
 
 ### Step 3: Analyze Feature Context
 1.  Read `context.json` — get `current_feature`, `architecture_style`, `project_structure_convention`.
