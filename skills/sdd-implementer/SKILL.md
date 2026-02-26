@@ -89,12 +89,17 @@ If the developer (or agent) realizes any spec artifact (`openapi.yaml`, `object_
 ## Task Completion Behavior
 
 After each task is implemented:
-1.  Update the task's status to `done` in `tasks.json`.
-2.  Append the session log entry as described above.
-3.  Inform the user of progress (e.g., "Task 3/5 complete").
-4.  **In batch mode**: Automatically proceed to the next pending task.
-5.  **In single-task mode**: Stop after the specified task.
-6.  **Do NOT auto-trigger the finish flow.** The verification, knowledge extraction, and archival steps below are ONLY executed when the user explicitly calls `/sdd-impl-finish`.
+1.  **Per-Task Build Verification (MANDATORY)**:
+    1.  Run the project's type-check / compile command (determined from `context.json` language and `project_rules.md` build commands) to catch errors immediately.
+    2.  Run unit tests relevant to the current task (e.g., the spec file co-located with the generated code).
+    3.  If either check fails, fix the errors **before** marking the task as done. Log all failures and fixes in the session log.
+    4.  This ensures errors are caught early per-task rather than accumulating to the finish phase.
+2.  Update the task's status to `done` in `tasks.json`.
+3.  Append the session log entry as described above.
+4.  Inform the user of progress (e.g., "Task 3/5 complete").
+5.  **In batch mode**: Automatically proceed to the next pending task.
+6.  **In single-task mode**: Stop after the specified task.
+7.  **Do NOT auto-trigger the finish flow.** The verification, knowledge extraction, and archival steps below are ONLY executed when the user explicitly calls `/sdd-impl-finish`.
 
 ## Completion & Mandatory Knowledge Extraction
 
@@ -104,8 +109,10 @@ When `/sdd-impl-finish` is called:
 
 ### Step 1: Verification
 1.  Run guardrail checks (`/sdd-guard-check code`) on all implemented files.
-2.  Verify all tasks for the feature have status `done` or `verified`.
-3.  **Only after both checks pass**, set `context.json.current_stage` to `"impl-complete"`. This is the sole trigger for `impl-complete` — it is NOT set automatically when tasks finish.
+2.  Run the **full build** and **all tests** (unit + integration) to ensure end-to-end correctness. Use the build/test commands from `project_rules.md`. Per-task verification catches local errors early; this step catches cross-task integration issues.
+3.  Verify all tasks for the feature have status `done` or `verified`.
+4.  If build or tests fail, fix the issues before proceeding. Log all failures and fixes in the session log.
+5.  **Only after all checks pass**, set `context.json.current_stage` to `"impl-complete"`. This is the sole trigger for `impl-complete` — it is NOT set automatically when tasks finish.
 
 ### Step 2: Knowledge Extraction (MANDATORY)
 Instead of asking "would you like to save patterns?", the agent **auto-generates drafts**, triages them, and presents for user confirmation:
