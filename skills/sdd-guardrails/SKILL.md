@@ -40,9 +40,7 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 
 ### 3. Implementation Checks (Called by `sdd-implementer`)
 -   **Linting**: "Does code follow project style?"
--   **Spec Match**: "Does the endpoint accept the defined DTO?" — Validate against `openapi.yaml` request/response schemas.
--   **Object Design Match**: "Do implemented classes match `object_design.json`?" — Verify class names, method signatures, properties, and layer placement.
--   **Schema Match**: "Do data-layer implementations match `data_api.json`?" — Verify entity fields, types, and relationships.
+-   **Spec Match**: "Does the implementation conform to the design specs produced for this feature?" — Validate against **whichever spec artifacts are present** (`object_design.json`, `openapi.yaml`, `data_api.json`, `interface_contract.json`). **Skip checks for artifacts that were not produced.**
 -   **Test Coverage**: "Are tests generated for this task?"
 -   **File Placement**: "Is the file at the `target_path` specified in `tasks.json`?"
 -   **Rule Compliance**: "Does the generated code follow Coding Standards, Architecture patterns, and naming conventions declared in `project_rules.md`?" — If violations found, raise as failure and fix before proceeding.
@@ -82,12 +80,14 @@ The guardrail check procedure:
 ## Drift Detection Logic
 
 When `/sdd-guard-drift` is called:
-1.  Parse spec artifacts from `.sdd/spec/<feature-id>/`: `openapi.yaml`, `object_design.json`, `data_api.json`.
-2.  Parse implemented code (Controllers, Services, Repositories, Entities).
-3.  Compare against each spec:
-    -   `object_design.json`: Class names, method signatures, properties, layer assignments.
-    -   `data_api.json`: Entity fields, types, relationships vs DB schemas/models.
+1.  Scan `.sdd/spec/<feature-id>/` for **all spec artifacts that exist** (e.g., `object_design.json`, `openapi.yaml`, `data_api.json`, `interface_contract.json`).
+2.  Parse implemented code corresponding to the feature.
+3.  For each spec artifact found, compare implementation against the spec:
+    -   `object_design.json`: Design unit names, method signatures, properties, layer assignments.
     -   `openapi.yaml`: Parameters (Name, Type, Required), Responses (Code, Schema).
+    -   `data_api.json`: Entity fields, types, relationships vs data-layer implementations.
+    -   `interface_contract.json`: CLI args, SDK surface, event schemas, etc.
+    -   **Skip** any spec type that was not produced during design.
 4.  If mismatch found → Report Drift → Recommend `/sdd-spec-update` or Implementation Fix.
 
 ## Lesson Trigger Protocol

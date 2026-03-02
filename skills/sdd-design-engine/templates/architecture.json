@@ -2,16 +2,16 @@
     "architecture_style": "{{ style }}",
     "components": [
         {
-            "name": "API Gateway",
-            "type": "Service",
-            "description": "Entry point for all client requests."
+            "name": "{{ ComponentName }}",
+            "type": "{{ ComponentType }}",
+            "description": "{{ description }}"
         }
     ],
     "data_flow": [
         {
-            "source": "Client",
-            "destination": "API Gateway",
-            "description": "HTTP Request"
+            "source": "{{ source }}",
+            "destination": "{{ destination }}",
+            "description": "{{ description }}"
         }
     ],
     "decision_log": []

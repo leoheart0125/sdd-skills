@@ -1,6 +1,6 @@
 ---
 name: sdd-design-engine
-description: Unified design pipeline transforming structured requirements into finalized specifications (Requirements → Architecture → API) with Ambiguity Resolution.
+description: Unified design pipeline transforming structured requirements into finalized specifications (Requirements → Architecture → Interfaces) with Ambiguity Resolution.
 dependencies:
   - sdd-knowledge-base
   - sdd-guardrails
@@ -12,7 +12,7 @@ This skill consolidates the entire design phase into a unified, friction-free fl
 
 ## Core Responsibilities
 
-1.  **Unified Design Flow**: Seamlessly transitions from Requirements Analysis → System Architecture → Object Design → Data/API Design.
+1.  **Unified Design Flow**: Seamlessly transitions from Requirements Analysis → System Architecture → Object Design → Interface & Contract Design.
 2.  **Ambiguity Resolution**: Surface concerns, ask clarifying questions, and converge on precise specs before proceeding.
 3.  **Continuous Guardrails**: Automatically invokes `sdd-guardrails` at every sub-stage to ensure consistency.
 4.  **Auto-Persistence**: Automatically saves state to `sdd-knowledge-base`—no manual commit steps required.
@@ -25,11 +25,11 @@ This skill consolidates the entire design phase into a unified, friction-free fl
     -   *If stage is `design` and `request.md` exists*: Starts Requirements Analysis.
     -   *If requirements exist*: Proceed to Architecture.
     -   *If architecture exists*: Proceed to Object Design.
-    -   *If object design exists*: Proceed to Data/API.
+    -   *If object design exists*: Proceed to Interface & Contract Design.
 -   `/sdd-design-requirements`: Force entry into Requirements Analysis.
 -   `/sdd-design-architecture`: Force entry into Architecture Design.
 -   `/sdd-design-objects`: Force entry into Object Design.
--   `/sdd-design-api`: Force entry into Data/API Design.
+-   `/sdd-design-interfaces`: Force entry into Interface & Contract Design.
 -   `/sdd-spec-update`: Adjust spec based on "drift" detected during implementation.
 
 ## JSON Writing Rule
@@ -42,8 +42,9 @@ All spec artifacts are written to `.sdd/spec/<feature-id>/`:
 - `requirements.json`
 - `architecture.json`
 - `object_design.json`
-- `openapi.yaml`
-- `data_api.json`
+- `openapi.yaml` — *if feature involves HTTP APIs*
+- `data_api.json` — *if feature involves persistent data*
+- `interface_contract.json` — *if feature has other interface boundaries (CLI, SDK, events, IPC, etc.)*
 - `diagrams/*.mmd` (component, sequence, class diagrams)
 - `concerns.json` (clarification history)
 
@@ -151,27 +152,35 @@ Before generating **any** design artifact (requirements, architecture, or API), 
 -   **Output**: `.sdd/spec/<feature-id>/architecture.json` + `.sdd/spec/<feature-id>/diagrams/*.mmd`.
 -   **Guardrail**: Ensure all user stories are covered by components. Validate architecture style compliance (see `sdd-guardrails`).
 
-### 3. Object Design (NEW)
+### 3. Object Design
 -   **Input**: `architecture.json`.
 -   **Action**:
-    -   Define core **Domain Objects / Classes** — properties, method signatures, and responsibilities.
-    -   Define **Interfaces / Abstractions** — dependency inversion boundaries between layers.
-    -   Define **Object Relationships** — inheritance, composition, dependency, association.
-    -   Generate **Class Diagram** (Mermaid).
--   **Clarify**: Run Ambiguity Resolution Protocol (e.g., "Should `UserService` depend on `IUserRepository` abstraction or concrete `UserRepository`?", "Is `Order` an aggregate root that owns `OrderItem`?").
+    -   Define core **design units** appropriate to the project — classes/interfaces (OOP), modules/functions (FP), components/hooks (UI), commands/handlers (CLI), resources/modules (IaC), etc.
+    -   Define **abstractions** — dependency inversion boundaries between layers.
+    -   Define **relationships** — inheritance, composition, dependency, association.
+    -   Generate **Class / Module Diagram** (Mermaid).
+-   **Clarify**: Run Ambiguity Resolution Protocol on structural decisions.
 -   **Output**: `.sdd/spec/<feature-id>/object_design.json` (see `templates/object_design.json`) + `.sdd/spec/<feature-id>/diagrams/class.mmd`.
--   **Guardrail**: Validate layer boundaries per `project_rules.md` (e.g., domain objects must not depend on infrastructure). Ensure all components from `architecture.json` have corresponding classes.
+-   **Guardrail**: Validate layer boundaries per `project_rules.md`. Ensure all components from `architecture.json` have corresponding design units.
 
-### 4. Data & API (formerly `sdd-data-api-engine`)
+### 4. Interface & Contract Design
 -   **Input**: `object_design.json` + `architecture.json`.
--   **Action**: Define Schema (ERD) and API Spec (OpenAPI). Use object design as the source of truth for entity structures.
--   **Clarify**: Run Ambiguity Resolution Protocol (e.g., "Pagination cursor-based or offset? Need streaming endpoint?").
--   **Output**: `.sdd/spec/<feature-id>/openapi.yaml` + `.sdd/spec/<feature-id>/data_api.json`.
--   **Guardrail**: Validate Schema vs. API mismatch; validate Schema consistency with `object_design.json`; check for breaking changes.
+-   **Action**: Define the external-facing contracts and data schemas appropriate to the feature. Produce **only the artifacts relevant to the feature's interface boundaries**:
+
+    | Artifact | When to produce |
+    |----------|----------------|
+    | `openapi.yaml` | Feature exposes or consumes HTTP/REST APIs |
+    | `data_api.json` | Feature involves persistent data (DB entities, schemas) |
+    | `interface_contract.json` | Feature has non-HTTP interfaces (CLI args, SDK public API, event schemas, IPC, etc.) |
+
+    If the feature has **no external interface boundaries** (e.g., a pure refactoring or internal library), this stage may be skipped entirely.
+-   **Clarify**: Run Ambiguity Resolution Protocol on interface decisions.
+-   **Output**: Whichever artifacts from the table above are relevant, written to `.sdd/spec/<feature-id>/`.
+-   **Guardrail**: Validate consistency between produced interface specs and `object_design.json`; check for breaking changes.
 
 ## Compounding Features
 
--   **Pattern Recognition**: When generating architecture/API, the engine queries `sdd-knowledge-base` for similar past patterns by **tags** (e.g., `crud`, `auth`) to suggest proven designs.
+-   **Pattern Recognition**: When generating architecture/interfaces, the engine queries `sdd-knowledge-base` for similar past patterns by **tags** to suggest proven designs.
 -   **Lessons Learned**: Checks `sdd-knowledge-base` for "avoid" lists before making decisions.
 
 ## Stage Transitions
@@ -207,7 +216,7 @@ graph TD
     OD1 -->|All Resolved| ODF{Guardrails Pass?}
     ODF -->|No| OD
     ODF -->|Yes| ODG[Auto-Save object_design.json]
-    ODG --> H(Generate API Spec)
+    ODG --> H(Interface & Contract Design)
     H --> H1{Concerns?}
     H1 -->|BLOCKING/WARNING| H2[Ask User]
     H2 --> H3[User Answers]
@@ -252,6 +261,6 @@ User: Separate class. UserService handles profile, AuthService handles auth.
 
 Agent: > Resolved. Auto-saving object_design.json + class.mmd...
 
-       [Data & API] Generating from object design...
+       [Interface & Contract Design] Analyzing interface boundaries...
        ...
 ```

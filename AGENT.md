@@ -44,7 +44,7 @@ User ↔ Orchestrator (you) (Delegate via Task tool)
 | `/sdd-design-requirements` | Force requirements analysis |
 | `/sdd-design-architecture` | Force architecture design |
 | `/sdd-design-objects` | Force object/class design |
-| `/sdd-design-api` | Force API design |
+| `/sdd-design-interfaces` | Force interface & contract design |
 | `/sdd-spec-update` | Drift description from Implement Agent or user |
 
 ### Delegate to Plan Agent
@@ -178,7 +178,7 @@ These are **not** user-invocable slash commands. They are instruction labels use
 - `/sdd-spec-update` — spec drift handling (delegated to Design Agent)
 - `/sdd-impl-fix` — guardrail fix (delegated to Implement Agent)
 - `/sdd-plan-optimize` — task re-sorting (delegated to Plan Agent)
-- `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-objects`, `/sdd-design-api` — design sub-stage entry points (delegated to Design Agent)
+- `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-objects`, `/sdd-design-interfaces` — design sub-stage entry points (delegated to Design Agent)
 - `/sdd-knowledge-reindex` — index rebuild (handled directly by orchestrator)
 
 ## Skill Reference

@@ -53,12 +53,13 @@ When `/sdd-plan` is called:
 
 ### Step 3: Analyze Feature Context
 1.  Read `context.json` — get `current_feature`, `architecture_style`, `project_structure_convention`.
-2.  Read ALL spec artifacts from `.sdd/spec/<feature-id>/`:
+2.  Read **all available** spec artifacts from `.sdd/spec/<feature-id>/`. The following may exist depending on the feature's design:
     -   `requirements.json` — functional/non-functional requirements and constraints.
     -   `architecture.json` — components, data flow, architectural decisions.
-    -   `object_design.json` — classes, interfaces, relationships.
-    -   `data_api.json` — DB entity schemas and API endpoint definitions.
-    -   `openapi.yaml` — API contract (request/response schemas).
+    -   `object_design.json` — design units (classes, modules, components), relationships.
+    -   `data_api.json` — DB entity schemas and data-layer definitions (if applicable).
+    -   `openapi.yaml` — API contract (if applicable).
+    -   `interface_contract.json` — non-HTTP interface definitions (if applicable).
 
 ### Step 4: Pre-Plan Clarification
 Before generating tasks, check for concerns:
@@ -76,10 +77,10 @@ Present BLOCKING concerns to user and **STOP**. Wait for user resolution. Skip i
     -   Adjust `target_path` to match `project_rules.md` conventions.
     -   Output `tasks.json`.
 -   **If No Match**:
-    -   Parse ALL spec artifacts (`requirements.json`, `architecture.json`, `object_design.json`, `data_api.json`, `openapi.yaml`).
-    -   Identify Endpoints, Models, Services.
-    -   Map each class/interface from `object_design.json` to a task, ensuring class names, method signatures, and layer placement are preserved in the task description.
-    -   Map each entity from `data_api.json` to a data-layer task (migration, repository, etc.).
+    -   Parse ALL available spec artifacts.
+    -   Identify the key implementation units from spec artifacts (e.g., components, modules, services, pages, commands — depending on the project type).
+    -   Map each design unit from `object_design.json` to a task, ensuring names, signatures, and layer placement are preserved in the task description.
+    -   Map additional artifacts (`data_api.json`, `openapi.yaml`, `interface_contract.json`) to relevant tasks if they exist.
     -   Verify every functional requirement in `requirements.json` is addressed by at least one task.
     -   Generate `target_path` for each task based on project rules.
     -   Generate fresh `tasks.json`.

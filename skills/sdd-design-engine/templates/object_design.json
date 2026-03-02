@@ -3,7 +3,7 @@
     "classes": [
         {
             "name": "ClassName",
-            "layer": "domain | application | infrastructure",
+            "layer": "{{ layer as defined in project_rules.md }}",
             "responsibility": "Brief description of class responsibility",
             "properties": [
                 {

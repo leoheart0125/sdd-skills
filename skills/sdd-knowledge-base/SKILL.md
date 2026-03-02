@@ -214,10 +214,10 @@ Show a summary table before saving:
 ```
 | # | Type    | Title                        | Action           | Reason                          |
 |---|---------|------------------------------|------------------|---------------------------------|
-| 1 | Pattern | CRUD endpoint scaffold       | MERGE into P-003 | 80% overlap with existing       |
-| 2 | Lesson  | Always use camelCase for DTOs | PROMOTE to rules | Project-wide, not feature-bound |
+| 1 | Pattern | Form validation scaffold     | MERGE into P-003 | 80% overlap with existing       |
+| 2 | Lesson  | Always use camelCase naming   | PROMOTE to rules | Project-wide, not feature-bound |
 | 3 | Lesson  | Prisma no returning in batch  | SAVE (new)       | Domain-specific (Prisma + ORM)  |
-| 4 | Pattern | User auth token structure     | SKIP             | Feature-specific detail         |
+| 4 | Pattern | Auth token structure          | SKIP             | Feature-specific detail         |
 ```
 
 User confirms, edits, or overrides each action before execution.

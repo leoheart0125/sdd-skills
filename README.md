@@ -54,7 +54,7 @@ Acts as a **Product Manager** — discusses requirements interactively, asks cla
 ```bash
 /sdd-design
 ```
-Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, object/class design, and defines the API spec.
+Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, object design, and defines interface contracts.
 
 **Phase 2: Plan (Plan Agent)**
 ```bash
@@ -96,7 +96,7 @@ This project ships commands in two formats:
 | Agent | Role | Description |
 |-------|------|-------------|
 | [`agents/request-agent.md`](./agents/request-agent.md) | **Product Manager** | Facilitates requirement discussions and produces structured `request.md` specs using `sdd-request-engine`. |
-| [`agents/design-agent.md`](./agents/design-agent.md) | **Architect** | Handles requirements analysis, architecture design, and API specification using `sdd-design-engine`. |
+| [`agents/design-agent.md`](./agents/design-agent.md) | **Architect** | Handles requirements analysis, architecture design, and interface & contract specification using `sdd-design-engine`. |
 | [`agents/plan-agent.md`](./agents/plan-agent.md) | **Planner** | Converts specs into actionable tasks using `sdd-task-planner`. |
 | [`agents/implement-agent.md`](./agents/implement-agent.md) | **Builder** | Executes tasks, writes code, and runs tests using `sdd-implementer` and `sdd-guardrails`. |
 
@@ -105,7 +105,7 @@ This project ships commands in two formats:
 |-------|------|-------------|
 | [`sdd-system`](./skills/sdd-system/SKILL.md) | **Manager** | Orchestrates the project lifecycle, initialization (with optional project principles), feature management with auto-increment IDs, and global status. |
 | [`sdd-request-engine`](./skills/sdd-request-engine/SKILL.md) | **PM Core** | Interactive requirement elicitation — produces structured `request.md` with user stories, acceptance criteria, and scope. |
-| [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Transforms `request.md` into Requirements → Architecture → Object Design → API design with Ambiguity Resolution Protocol. |
+| [`sdd-design-engine`](./skills/sdd-design-engine/SKILL.md) | **Design Core** | Transforms `request.md` into Requirements → Architecture → Object Design → Interface & Contract Design with Ambiguity Resolution Protocol. |
 | [`sdd-knowledge-base`](./skills/sdd-knowledge-base/SKILL.md) | **Memory** | Central store for State, Design Patterns (tag-based), Lessons Learned (event-driven). |
 | [`sdd-guardrails`](./skills/sdd-guardrails/SKILL.md) | **Safety** | Continuous validation with programmatic rule enforcement at design, plan, and implementation stages. |
 | [`sdd-task-planner`](./skills/sdd-task-planner/SKILL.md) | **Planning Core** | Generates implementation plans with rule-aware `target_path` validation and pattern matching by tags. |
@@ -121,7 +121,7 @@ All SDD artifacts are stored in the `.sdd/` directory. **Do not edit these manua
 │   ├── context.json      # State: tech_stack, current_feature, stage, feature_counter, patterns, lessons
 │   └── project_rules.md  # Architecture rules, coding standards, conventions (+ user-defined principles)
 ├── spec/                 # Feature-Scoped Specifications
-│   └── <feature-id>/    # request.md, requirements.json, architecture.json, openapi.yaml, concerns.json
+│   └── <feature-id>/    # request.md, requirements.json, architecture.json, + interface specs as needed
 ├── plan/                 # Feature-Scoped Implementation Plans
 │   └── <feature-id>/    # tasks.json (with target_path per task)
 ├── features/             # Archived Snapshots (spec+plan per completed feature)

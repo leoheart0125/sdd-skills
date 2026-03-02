@@ -46,20 +46,21 @@ When `/sdd-impl-start` is called:
 2.  Check Task Type (e.g., "Create Endpoint").
 3.  **Check Context**: Read `.sdd/context/context.json` to determine Language, Framework, and `current_feature`.
 4.  **Read Task**: Load from `.sdd/plan/<feature-id>/tasks.json` using the task ID.
-5.  **Read Design Spec (MANDATORY)**: Load the following spec artifacts from `.sdd/spec/<feature-id>/` and identify elements relevant to this task:
-    -   `object_design.json` — class/interface definitions, properties, method signatures, relationships.
-    -   `architecture.json` — component boundaries, layer structure, data flow direction.
-    -   `data_api.json` — DB entity schemas, field types, relationships, API endpoint definitions.
-    -   `openapi.yaml` — exact API contracts (request/response schemas, status codes, validation rules).
-    The generated code MUST:
-    -   Use the exact class/interface names defined in `object_design.json`.
+5.  **Read Design Spec (MANDATORY)**: Load **all available** spec artifacts from `.sdd/spec/<feature-id>/` and identify elements relevant to this task. The following may exist depending on the feature's design:
+    -   `architecture.json` — component boundaries, layer structure, data flow direction (always present).
+    -   `object_design.json` — design unit definitions, properties, method signatures, relationships (if applicable).
+    -   `data_api.json` — data entity schemas, field types, relationships (if feature involves persistent data).
+    -   `openapi.yaml` — API contracts, request/response schemas, status codes (if feature involves HTTP APIs).
+    -   `interface_contract.json` — non-HTTP interface definitions (if applicable).
+    The generated code MUST conform to whichever specs are present:
+    -   Use the exact names defined in `object_design.json`.
     -   Implement all properties and method signatures as specified.
-    -   Respect the `layer` assignment (domain, application, infrastructure).
+    -   Respect the layer assignments.
     -   Maintain the relationships (dependency, composition, implementation, etc.) as defined.
     -   Follow component boundaries and data flow direction from `architecture.json`.
-    -   Match DB entity fields/types/relationships from `data_api.json` for data-layer code.
-    -   Match endpoint signatures, request/response schemas from `openapi.yaml` for API-layer code.
-    -   If a task maps to no class in `object_design.json`, proceed without constraint but log a warning in the session log.
+    -   Match the contracts defined in any interface spec artifacts that are present.
+    -   If a spec artifact does not exist for this feature, that aspect is unconstrained.
+    -   If a task maps to no design unit in `object_design.json`, proceed without constraint but log a warning in the session log.
 6.  **Validate Target Path**: Ensure the task's `target_path` follows `project_rules.md` conventions.
 7.  **Query Knowledge Base (Index-Based)**: Read `.sdd/knowledge/index.json`, filter `patterns` by tags matching the current task's domain and stack. Load ONLY the matched pattern files. Do NOT scan the full `patterns/` directory.
 8.  **Output the knowledge match results** before generating code:
@@ -75,8 +76,8 @@ When `/sdd-impl-start` is called:
 ```
 
 9.  **Generate/Scaffold**:
-    -   If a pattern exists, use it as a base, but override with the design spec (class names, API contracts, DB schemas) from Step 5.
-    -   If not, generate idiomatic code based on the design spec from Step 5, `project_rules.md`, and the technology stack.
+    -   If a pattern exists, use it as a base, but override with the design spec (names, contracts, schemas) from Step 5.
+    -   If not, generate idiomatic code based on the available design specs from Step 5, `project_rules.md`, and the technology stack.
 10.  Place generated code at the `target_path` specified in the task using the **write_file tool**.
 
 ## Session Log (MANDATORY)
@@ -102,8 +103,8 @@ If the developer (or agent) realizes any spec artifact (`openapi.yaml`, `object_
 
 After each task is implemented:
 1.  **Per-Task Build Verification (MANDATORY)**:
-    1.  Run the project's type-check / compile command (determined from `context.json` language and `project_rules.md` build commands) to catch errors immediately.
-    2.  Run unit tests relevant to the current task (e.g., the spec file co-located with the generated code).
+    1.  Run the project's build / type-check / compile command (determined from `context.json` and `project_rules.md`) to catch errors immediately. If no build commands are defined in `project_rules.md`, skip automated build verification and note this in the session log.
+    2.  Run unit tests relevant to the current task (e.g., the spec file co-located with the generated code). If no test commands are defined, skip and note in the session log.
     3.  If either check fails, fix the errors **before** marking the task as done. Log all failures and fixes in the session log.
     4.  This ensures errors are caught early per-task rather than accumulating to the finish phase.
 2.  Update the task's status to `done` in `tasks.json`.
@@ -132,8 +133,8 @@ Instead of asking "would you like to save patterns?", the agent **auto-generates
 1.  **Read Session Log**: Load `.sdd/logs/session.md` for the full implementation history across ALL sessions. This is the primary source of truth for what happened during implementation.
 
 2.  **Pattern Draft**: Analyze the implemented code and session log for reusable patterns.
-    -   Identify repeating code structures (e.g., "CRUD endpoint with validation and error handling").
-    -   Generate a draft pattern with suggested **tags** (e.g., `["crud", "rest", "validation"]`).
+    -   Identify repeating code structures (e.g., "form with validation and error handling", "data fetching with caching", "CLI command with arg parsing").
+    -   Generate a draft pattern with suggested **tags** (e.g., `["validation", "form", "error-handling"]`).
 
 3.  **Lesson Draft**: Review session log AND current conversation for gaps:
     -   Were there spec updates (`/sdd-spec-update` calls)?
