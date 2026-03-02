@@ -55,7 +55,6 @@ Acts as a **Product Manager** — discusses requirements interactively, asks cla
 /sdd-design
 ```
 Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, object/class design, and defines the API spec.
-*Shortcuts:* `/sdd-design-requirements`, `/sdd-design-architecture`, `/sdd-design-api`
 
 **Phase 2: Plan (Plan Agent)**
 ```bash
@@ -74,15 +73,8 @@ Executes all pending tasks in dependency order. Scaffolds code from templates (m
 ```
 Marks the task as complete, triggers final verification, and **mandatorily extracts patterns and lessons** for the knowledge base.
 
-```bash
-/sdd-impl-fix
-```
-Request a fix if guardrails fail.
-
 **Knowledge Commands**
 ```bash
-/sdd-learn "lesson description"        # Record a lesson learned
-/sdd-pattern-save "pattern name"       # Save a reusable pattern
 /sdd-rule-update "proposed rule"       # Propose a project rule update
 ```
 
