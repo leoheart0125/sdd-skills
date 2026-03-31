@@ -20,7 +20,7 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 ## Commands
 
 -   `/sdd-guard-check <context>`: Run a specific set of checks for the given context (requirements | architecture | api | plan | code).
--   `/sdd-guard-drift`: Compare the current codebase against `openapi.yaml` and `architecture.json`.
+-   `/sdd-guard-drift`: Compare the current codebase against all spec artifacts that exist for the active feature.
 -   `/sdd-guard-report`: Generate a summary of active violations.
 
 ## Check Types
@@ -28,7 +28,7 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 ### 1. Design Checks (Called by `sdd-design-engine`)
 -   **Ambiguity Check**: "Are requirements specific enough?" (flag items with low `confidence_score`)
 -   **Coverage Check**: "Do all Use Cases have a Component?"
--   **Contract Check**: "Do API inputs match Database columns?"
+-   **Contract Check**: "Do interface contracts match their corresponding design units and data models?"
 -   **Rule Conflict Check**: "Do generated specs conflict with `project_rules.md`?" — If yes, raise as BLOCKING concern.
 
 ### 2. Plan Checks (Called by `sdd-task-planner`) — NEW
@@ -40,7 +40,7 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 
 ### 3. Implementation Checks (Called by `sdd-implementer`)
 -   **Linting**: "Does code follow project style?"
--   **Spec Match**: "Does the implementation conform to the design specs produced for this feature?" — Validate against **whichever spec artifacts are present** (`object_design.json`, `openapi.yaml`, `data_api.json`, `interface_contract.json`). **Skip checks for artifacts that were not produced.**
+-   **Spec Match**: "Does the implementation conform to the design specs produced for this feature?" — Validate against **whichever spec artifacts are present** (`object_design.json`, `openapi.yaml`, `data_model.json`, `interface_contract.json`). **Skip checks for artifacts that were not produced.**
 -   **Test Coverage**: "Are tests generated for this task?"
 -   **File Placement**: "Is the file at the `target_path` specified in `tasks.json`?"
 -   **Rule Compliance**: "Does the generated code follow Coding Standards, Architecture patterns, and naming conventions declared in `project_rules.md`?" — If violations found, raise as failure and fix before proceeding.
@@ -73,20 +73,18 @@ The guardrail check procedure:
 3.  For each task in `tasks.json`, validate `target_path` against the declared conventions.
 4.  For `architecture.json`, validate component grouping matches the declared style.
 
-> **Example**: If `project_rules.md` declares Screaming Architecture:
-> -   ✅ `src/auth/domain/auth-token.ts` → domain concept first
-> -   ❌ `src/domain/auth-token.ts` → layer first (violates convention)
+The source of truth for what constitutes a valid path is always `project_rules.md` — not any hardcoded assumption about architecture style. Different projects use different grouping strategies (feature-first, layer-first, module-based, etc.), and the guardrail must validate against what the project actually declared.
 
 ## Drift Detection Logic
 
 When `/sdd-guard-drift` is called:
-1.  Scan `.sdd/spec/<feature-id>/` for **all spec artifacts that exist** (e.g., `object_design.json`, `openapi.yaml`, `data_api.json`, `interface_contract.json`).
+1.  Scan `.sdd/spec/<feature-id>/` for **all spec artifacts that exist** (e.g., `object_design.json`, `openapi.yaml`, `data_model.json`, `interface_contract.json`).
 2.  Parse implemented code corresponding to the feature.
 3.  For each spec artifact found, compare implementation against the spec:
-    -   `object_design.json`: Design unit names, method signatures, properties, layer assignments.
+    -   `object_design.json`: Design unit names, method signatures, properties, layer assignments, `kind` designations.
     -   `openapi.yaml`: Parameters (Name, Type, Required), Responses (Code, Schema).
-    -   `data_api.json`: Entity fields, types, relationships vs data-layer implementations.
-    -   `interface_contract.json`: CLI args, SDK surface, event schemas, etc.
+    -   `data_model.json`: Entity fields, types, constraints, relationships vs data-layer implementations.
+    -   `interface_contract.json`: CLI args, SDK surface, event schemas, component props/events, GraphQL types, etc.
     -   **Skip** any spec type that was not produced during design.
 4.  If mismatch found → Report Drift → Recommend `/sdd-spec-update` or Implementation Fix.
 
@@ -98,7 +96,7 @@ When `/sdd-guard-drift` is called:
     ```json
     {
         "trigger": "guard-check-<context>",
-        "advice": "Response DTO must exactly match OpenAPI schema. Do not add extra wrappers."
+        "advice": "Implementation must exactly match the spec artifact. Do not add undeclared fields or deviate from contracts."
     }
     ```
 2.  If the **same lesson triggers twice** across different features → propose promotion to `project_rules.md` via `/sdd-rule-update`.

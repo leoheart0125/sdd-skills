@@ -49,14 +49,14 @@ When `/sdd-impl-start` is called:
 5.  **Read Design Spec (MANDATORY)**: Load **all available** spec artifacts from `.sdd/spec/<feature-id>/` and identify elements relevant to this task. The following may exist depending on the feature's design:
     -   `architecture.json` — component boundaries, layer structure, data flow direction (always present).
     -   `object_design.json` — design unit definitions, properties, method signatures, relationships (if applicable).
-    -   `data_api.json` — data entity schemas, field types, relationships (if feature involves persistent data).
+    -   `data_model.json` — data entity schemas, field types, relationships (if feature involves persistent data or domain entities).
     -   `openapi.yaml` — API contracts, request/response schemas, status codes (if feature involves HTTP APIs).
     -   `interface_contract.json` — non-HTTP interface definitions (if applicable).
     The generated code MUST conform to whichever specs are present:
-    -   Use the exact names defined in `object_design.json`.
+    -   Use the exact names defined in `object_design.json` for all design units (classes, components, modules, hooks, etc.).
     -   Implement all properties and method signatures as specified.
-    -   Respect the layer assignments.
-    -   Maintain the relationships (dependency, composition, implementation, etc.) as defined.
+    -   Respect the layer assignments and `kind` designations.
+    -   Maintain the relationships (dependency, composition, implementation, uses, emits, etc.) as defined.
     -   Follow component boundaries and data flow direction from `architecture.json`.
     -   Match the contracts defined in any interface spec artifacts that are present.
     -   If a spec artifact does not exist for this feature, that aspect is unconstrained.
@@ -92,7 +92,7 @@ This log **persists across sessions** and is the primary input for knowledge ext
 
 ## Feedback Loop (Drift Management)
 
-If the developer (or agent) realizes any spec artifact (`openapi.yaml`, `object_design.json`, `data_api.json`) is missing a field or has an inconsistency during implementation:
+If the developer (or agent) realizes any spec artifact (`openapi.yaml`, `object_design.json`, `data_model.json`) is missing a field or has an inconsistency during implementation:
 1.  **Do NOT** just hack the code.
 2.  Call `/sdd-spec-update` (via `sdd-design-engine`).
 3.  Wait for Spec update.
@@ -133,7 +133,7 @@ Instead of asking "would you like to save patterns?", the agent **auto-generates
 1.  **Read Session Log**: Load `.sdd/logs/session.md` for the full implementation history across ALL sessions. This is the primary source of truth for what happened during implementation.
 
 2.  **Pattern Draft**: Analyze the implemented code and session log for reusable patterns.
-    -   Identify repeating code structures (e.g., "form with validation and error handling", "data fetching with caching", "CLI command with arg parsing").
+    -   Identify repeating code structures (e.g., "form with validation and error handling", "data fetching with caching", "reusable UI component with props/events", "CLI command with arg parsing", "API endpoint with auth middleware").
     -   Generate a draft pattern with suggested **tags** (e.g., `["validation", "form", "error-handling"]`).
 
 3.  **Lesson Draft**: Review session log AND current conversation for gaps:
@@ -163,5 +163,5 @@ These are recorded immediately via `/sdd-learn` (which applies Knowledge Triage 
 
 ## Integration
 
--   **Consumes**: `.sdd/plan/<feature-id>/tasks.json`, `.sdd/spec/<feature-id>/*` (`object_design.json`, `architecture.json`, `data_api.json`, `openapi.yaml`), `project_rules.md`, `knowledge/patterns` (by tags).
+-   **Consumes**: `.sdd/plan/<feature-id>/tasks.json`, `.sdd/spec/<feature-id>/*` (`object_design.json`, `architecture.json`, `data_model.json`, `openapi.yaml`, `interface_contract.json`), `project_rules.md`, `knowledge/patterns` (by tags).
 -   **Invokes**: `sdd-guardrails` (for verification), `sdd-design-engine` (for spec updates), `sdd-knowledge-base` (for pattern/lesson saving).

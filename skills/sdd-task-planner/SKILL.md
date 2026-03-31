@@ -35,7 +35,7 @@ When `/sdd-plan` is called:
 
 ### Step 2: Knowledge Lookup (MANDATORY — Index-Based)
 1.  Read `.sdd/knowledge/index.json` (the lightweight index).
-2.  Filter `patterns` entries whose `tags` match the current feature's domain (e.g., `crud`, `auth`).
+2.  Filter `patterns` entries whose `tags` match the current feature's domain keywords.
 3.  Filter `lessons` entries whose `tags` match OR whose `trigger` matches `"planning-*"` or the current feature's domain.
 4.  Load ONLY the matched files (via the `file` path in each index entry). Do NOT scan the full `patterns/` or `lessons/` directories.
 5.  Summarize relevant findings — reuse proven strategies and avoid past mistakes.
@@ -56,15 +56,15 @@ When `/sdd-plan` is called:
 2.  Read **all available** spec artifacts from `.sdd/spec/<feature-id>/`. The following may exist depending on the feature's design:
     -   `requirements.json` — functional/non-functional requirements and constraints.
     -   `architecture.json` — components, data flow, architectural decisions.
-    -   `object_design.json` — design units (classes, modules, components), relationships.
-    -   `data_api.json` — DB entity schemas and data-layer definitions (if applicable).
+    -   `object_design.json` — design units (classes, components, modules, hooks, handlers, etc.), relationships.
+    -   `data_model.json` — data entity schemas and storage definitions (if applicable).
     -   `openapi.yaml` — API contract (if applicable).
     -   `interface_contract.json` — non-HTTP interface definitions (if applicable).
 
 ### Step 4: Pre-Plan Clarification
 Before generating tasks, check for concerns:
-- "This feature requires a new DB migration. Which task should handle it?"
-- "Found a similar pattern `crud-api` (tags: crud, rest). Apply it or customize?"
+- "This feature requires a new data migration / schema change. Which task should handle it?"
+- "Found a similar pattern `form-validation` (tags: form, validation, ui). Apply it or customize?"
 - "Spec item REQ-003 still has open clarifications. Resolve via `/sdd-design` first?"
 
 Present BLOCKING concerns to user and **STOP**. Wait for user resolution. Skip if no concerns.
@@ -73,14 +73,14 @@ Present BLOCKING concerns to user and **STOP**. Wait for user resolution. Skip i
 -   **If Pattern Match Found**:
     -   Load Pattern Task List.
     -   Replace placeholders (e.g., `{{Entity}}` → `User`).
-    -   Cross-reference with spec artifacts to ensure all requirements, classes, endpoints, and entities are covered.
+    -   Cross-reference with spec artifacts to ensure all requirements, design units, interfaces, and entities are covered.
     -   Adjust `target_path` to match `project_rules.md` conventions.
     -   Output `tasks.json`.
 -   **If No Match**:
     -   Parse ALL available spec artifacts.
     -   Identify the key implementation units from spec artifacts (e.g., components, modules, services, pages, commands — depending on the project type).
-    -   Map each design unit from `object_design.json` to a task, ensuring names, signatures, and layer placement are preserved in the task description.
-    -   Map additional artifacts (`data_api.json`, `openapi.yaml`, `interface_contract.json`) to relevant tasks if they exist.
+    -   Map each design unit from `object_design.json` to a task, ensuring names, signatures, `kind`, and layer placement are preserved in the task description.
+    -   Map additional artifacts (`data_model.json`, `openapi.yaml`, `interface_contract.json`) to relevant tasks if they exist.
     -   Verify every functional requirement in `requirements.json` is addressed by at least one task.
     -   Generate `target_path` for each task based on project rules.
     -   Generate fresh `tasks.json`.
@@ -120,6 +120,6 @@ This is NOT optional. Every user adjustment to the plan MUST be recorded as a le
 
 ## Integration
 
--   **Input**: `context.json`, `project_rules.md`, `.sdd/spec/<feature-id>/*` (`requirements.json`, `architecture.json`, `object_design.json`, `data_api.json`, `openapi.yaml`), `sdd-knowledge-base`.
+-   **Input**: `context.json`, `project_rules.md`, `.sdd/spec/<feature-id>/*` (`requirements.json`, `architecture.json`, `object_design.json`, `data_model.json`, `openapi.yaml`, `interface_contract.json`), `sdd-knowledge-base`.
 -   **Output**: `.sdd/plan/<feature-id>/tasks.json` (consumed by `sdd-implementer`).
 -   **Invokes**: `sdd-guardrails` (plan-level checks).

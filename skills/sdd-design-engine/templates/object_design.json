@@ -1,15 +1,16 @@
 {
     "feature": "{{ feature_id }}",
-    "classes": [
+    "design_units": [
         {
-            "name": "ClassName",
+            "name": "UnitName",
+            "kind": "class | component | module | function | hook | resource | handler",
             "layer": "{{ layer as defined in project_rules.md }}",
-            "responsibility": "Brief description of class responsibility",
+            "responsibility": "Brief description of this unit's responsibility",
             "properties": [
                 {
                     "name": "propertyName",
                     "type": "Type",
-                    "visibility": "public | private | protected"
+                    "description": "What this property represents"
                 }
             ],
             "methods": [
@@ -22,18 +23,17 @@
                         }
                     ],
                     "returnType": "ReturnType",
-                    "visibility": "public | private | protected",
                     "description": "What this method does"
                 }
             ]
         }
     ],
-    "interfaces": [
+    "abstractions": [
         {
-            "name": "IInterfaceName",
-            "layer": "domain | application",
-            "purpose": "Why this abstraction exists",
-            "methods": [
+            "name": "AbstractionName",
+            "layer": "{{ layer }}",
+            "purpose": "Why this abstraction boundary exists",
+            "contract": [
                 {
                     "name": "methodName",
                     "params": [
@@ -49,9 +49,9 @@
     ],
     "relationships": [
         {
-            "from": "SourceClass",
-            "to": "TargetClass",
-            "type": "dependency | implementation | composition | inheritance | association",
+            "from": "SourceUnit",
+            "to": "TargetUnit",
+            "type": "dependency | implementation | composition | inheritance | association | uses | emits | subscribes",
             "description": "Why this relationship exists"
         }
     ]

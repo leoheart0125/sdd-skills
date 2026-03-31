@@ -1,0 +1,23 @@
+{
+    "entities": [
+        {
+            "name": "{{ EntityName }}",
+            "storage": "{{ storage_name }}",
+            "storage_type": "table | collection | document | key-value | state-slice",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "UUID",
+                    "constraints": ["primary_key", "not_null"]
+                }
+            ],
+            "relationships": [
+                {
+                    "type": "has_many | belongs_to | has_one | embeds | references",
+                    "target": "{{ RelatedEntity }}",
+                    "via": "{{ field_or_key }}"
+                }
+            ]
+        }
+    ]
+}

@@ -34,7 +34,7 @@ This skill consolidates the entire design phase into a unified, friction-free fl
 
 ## JSON Writing Rule
 
-When generating any JSON artifact (`requirements.json`, `architecture.json`, `data_api.json`, `concerns.json`), all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk. If validation fails, fix escaping issues before saving.
+When generating any JSON artifact (`requirements.json`, `architecture.json`, `data_model.json`, `concerns.json`), all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk. If validation fails, fix escaping issues before saving.
 
 ## Feature-Scoped Output
 
@@ -42,9 +42,9 @@ All spec artifacts are written to `.sdd/spec/<feature-id>/`:
 - `requirements.json`
 - `architecture.json`
 - `object_design.json`
-- `openapi.yaml` — *if feature involves HTTP APIs*
-- `data_api.json` — *if feature involves persistent data*
-- `interface_contract.json` — *if feature has other interface boundaries (CLI, SDK, events, IPC, etc.)*
+- `openapi.yaml` — *if feature involves HTTP/REST APIs*
+- `data_model.json` — *if feature involves persistent data or domain entities*
+- `interface_contract.json` — *if feature has other interface boundaries (CLI, SDK, events, GraphQL, gRPC, component props, etc.)*
 - `diagrams/*.mmd` (component, sequence, class diagrams)
 - `concerns.json` (clarification history)
 
@@ -59,13 +59,13 @@ After analyzing user intent or input artifacts, the agent assigns a **confidence
 
 ```json
 {
-    "feature": "user-auth",
+    "feature": "<feature-id>",
     "stage": "requirements",
     "concerns": [
         {
             "id": "C-001",
             "category": "BLOCKING",
-            "question": "Authentication via JWT or Session-based?",
+            "question": "Which approach for X — Option A or Option B?",
             "context": "Both are viable but affect architecture significantly.",
             "answer": null,
             "resolved": false
@@ -73,7 +73,7 @@ After analyzing user intent or input artifacts, the agent assigns a **confidence
         {
             "id": "C-002",
             "category": "WARNING",
-            "question": "Assuming minimum password length is 8 characters. OK?",
+            "question": "Assuming default for Y is Z. OK?",
             "context": "No explicit requirement stated.",
             "answer": null,
             "resolved": false
@@ -81,7 +81,7 @@ After analyzing user intent or input artifacts, the agent assigns a **confidence
         {
             "id": "C-003",
             "category": "INFO",
-            "question": "Per project_rules.md, using Clean Architecture.",
+            "question": "Per project_rules.md, using declared architecture style.",
             "context": "Matches architecture_style in context.json.",
             "answer": null,
             "resolved": false
@@ -155,10 +155,10 @@ Before generating **any** design artifact (requirements, architecture, or API), 
 ### 3. Object Design
 -   **Input**: `architecture.json`.
 -   **Action**:
-    -   Define core **design units** appropriate to the project — classes/interfaces (OOP), modules/functions (FP), components/hooks (UI), commands/handlers (CLI), resources/modules (IaC), etc.
-    -   Define **abstractions** — dependency inversion boundaries between layers.
-    -   Define **relationships** — inheritance, composition, dependency, association.
-    -   Generate **Class / Module Diagram** (Mermaid).
+    -   Define core **design units** appropriate to the project — classes/interfaces (OOP), modules/functions (FP), components/hooks (UI), commands/handlers (CLI), resources/modules (IaC), etc. Use the `kind` field to indicate the unit type.
+    -   Define **abstractions** — dependency inversion boundaries between layers (interfaces, protocols, abstract base classes, type contracts, etc.).
+    -   Define **relationships** — dependency, composition, association, uses, emits, subscribes, etc.
+    -   Generate **Design Unit Diagram** (Mermaid — class diagram for OOP, component diagram for UI, module diagram for FP, etc.).
 -   **Clarify**: Run Ambiguity Resolution Protocol on structural decisions.
 -   **Output**: `.sdd/spec/<feature-id>/object_design.json` (see `templates/object_design.json`) + `.sdd/spec/<feature-id>/diagrams/class.mmd`.
 -   **Guardrail**: Validate layer boundaries per `project_rules.md`. Ensure all components from `architecture.json` have corresponding design units.
@@ -170,8 +170,8 @@ Before generating **any** design artifact (requirements, architecture, or API), 
     | Artifact | When to produce |
     |----------|----------------|
     | `openapi.yaml` | Feature exposes or consumes HTTP/REST APIs |
-    | `data_api.json` | Feature involves persistent data (DB entities, schemas) |
-    | `interface_contract.json` | Feature has non-HTTP interfaces (CLI args, SDK public API, event schemas, IPC, etc.) |
+    | `data_model.json` | Feature involves persistent data or domain entities (DB tables, NoSQL collections, state stores, etc.) |
+    | `interface_contract.json` | Feature has non-HTTP interfaces (CLI args, SDK public API, event schemas, GraphQL schema, gRPC proto, component props/events, etc.) |
 
     If the feature has **no external interface boundaries** (e.g., a pure refactoring or internal library), this stage may be skipped entirely.
 -   **Clarify**: Run Ambiguity Resolution Protocol on interface decisions.
@@ -228,39 +228,45 @@ graph TD
 
 ## Example Usage
 
+**Example 1:**
 ```
 User: /sdd-design
 Agent: Active feature: "001-user-auth". Found request.md.
 
        [Requirements] Analyzing request.md...
        > Generated 5 Technical Requirements from User Stories.
-       > Confidence: REQ-001 (1.0), REQ-002 (0.8), REQ-003 (0.5)
 
        ⚠️ BLOCKING Concerns:
        - C-001: JWT or session-based tokens for social auth?
 
-       ℹ️ INFO:
-       - C-002: Per project_rules, using Clean Architecture.
-
 User: JWT with refresh tokens.
 
-Agent: > Resolved. Updating requirements...
-       > All concerns resolved. Guardrails passed. Auto-saving...
-
+Agent: > Resolved. Guardrails passed. Auto-saving requirements.json...
        [Architecture] Generating...
-       ...
+       [Object Design] Defining design units...
+       > Defined 4 units: User (class), AuthService (class), TokenStore (module), AuthMiddleware (handler).
 
-       [Object Design] Analyzing architecture components...
-       > Defined 4 Domain Classes: User, UserProfile, AuthToken, UserRepository.
-       > Generated class diagram with relationships.
+       [Interface & Contract Design] Producing openapi.yaml + data_model.json...
+```
+
+**Example 2:**
+```
+User: /sdd-design
+Agent: Active feature: "002-form-system". Found request.md.
+
+       [Requirements] Analyzing request.md...
+       > Generated 4 Technical Requirements.
 
        ⚠️ BLOCKING Concerns:
-       - C-004: Should UserService implement IAuthService or be a separate class?
+       - C-001: Should form validation be synchronous only or also support async validators?
 
-User: Separate class. UserService handles profile, AuthService handles auth.
+User: Both. Async for server-side uniqueness checks.
 
-Agent: > Resolved. Auto-saving object_design.json + class.mmd...
+Agent: > Resolved. Auto-saving requirements.json...
+       [Architecture] Generating component architecture...
+       [Object Design] Defining design units...
+       > Defined 5 units: FormProvider (component), useFormField (hook), ValidationEngine (module), FieldRenderer (component), useAsyncValidator (hook).
 
-       [Interface & Contract Design] Analyzing interface boundaries...
-       ...
+       [Interface & Contract Design] Producing interface_contract.json (component props/events)...
+       > No openapi.yaml needed. No data_model.json needed.
 ```

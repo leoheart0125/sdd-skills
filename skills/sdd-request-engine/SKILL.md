@@ -20,7 +20,7 @@ This skill acts as a **Product Manager** — it facilitates an interactive conve
 
 ## Commands
 
--   `/sdd-request <feature description>`: Start a new feature request conversation. The description is the initial intent (e.g., `/sdd-request user authentication with social login`).
+-   `/sdd-request <feature description>`: Start a new feature request conversation. The description is the initial intent.
 
 ## Request Flow
 
@@ -46,7 +46,7 @@ Before starting the conversation, gather context efficiently:
 ### Step 2: Feature ID Assignment
 
 1.  Read `context.json.feature_counter` (e.g., `"003"`).
-2.  Generate feature ID: `<counter>-<feature-name>` (e.g., `003-user-auth`).
+2.  Generate feature ID: `<counter>-<feature-name>` (e.g., `003-<feature-name-slug>`).
 3.  Set `context.json.current_feature` to the generated ID.
 4.  Increment `feature_counter` (e.g., `"003"` → `"004"`).
 5.  Create directories: `.sdd/spec/<feature-id>/` and `.sdd/plan/<feature-id>/`.

@@ -25,20 +25,53 @@ This skill is the entry point for the Compounding Engineering framework. It hand
 ## Initialization Logic
 
 When `/sdd-init` is called:
-1.  Check for `.sdd/` directory.
-2.  Create full directory structure:
-    - `context/` — `context.json`, `project_rules.md`
-    - `spec/` — Feature-scoped spec subdirectories
-    - `plan/` — Feature-scoped plan subdirectories
-    - `features/` — Feature snapshot archive (spec + plan per feature)
-    - `knowledge/index.json` — Lightweight knowledge index (initialize as `{ "patterns": {}, "lessons": {} }`)
-    - `knowledge/patterns/` — Reusable design/code patterns
-    - `knowledge/lessons/` — Lessons learned from past work
-    - `data/`, `logs/`, `temp/`
-3.  Generate initial `context.json` from template (includes `current_stage`, `current_feature`, `feature_counter: "001"`, etc.). **JSON Writing Rule**: All string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk.
-4.  Generate initial `project_rules.md` template.
-5.  **If user provided args**: Incorporate them as the "General Principles" section in `project_rules.md`. These principles guide all downstream design and implementation decisions.
-6.  Report: "Project initialized. Ready for `/sdd-request`."
+
+### Step 1: Create Directory Structure
+Check for `.sdd/` directory and create the full structure:
+- `context/` — `context.json`, `project_rules.md`
+- `spec/` — Feature-scoped spec subdirectories
+- `plan/` — Feature-scoped plan subdirectories
+- `features/` — Feature snapshot archive (spec + plan per feature)
+- `knowledge/index.json` — Lightweight knowledge index (initialize as `{ "patterns": {}, "lessons": {} }`)
+- `knowledge/patterns/` — Reusable design/code patterns
+- `knowledge/lessons/` — Lessons learned from past work
+- `data/`, `logs/`, `temp/`
+
+### Step 2: Project Discovery
+Before generating config files, gather project context. This information is critical — downstream skills (design, planning, guardrails, implementation) all depend on `context.json` and `project_rules.md` to make informed decisions.
+
+**a) Auto-detect from codebase** — scan the working directory for project markers:
+-   Package/dependency files (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `Gemfile`, `pom.xml`, `build.gradle`, `*.csproj`, etc.) → infer language, framework, build tools
+-   Existing directory structure → infer architecture style and conventions
+-   Config files (`.eslintrc`, `tsconfig.json`, `Makefile`, `Dockerfile`, etc.) → infer tooling
+-   Test directories/files → infer testing framework and strategy
+
+**b) Present findings and ask the user to confirm or adjust:**
+1.  **Tech stack**: Language(s), framework(s), build tool(s), package manager — "I detected X. Is this correct?"
+2.  **Architecture style**: Inferred from directory structure, or ask if unclear — "How is your project organized?" (e.g., feature-first, layer-first, module-based, monorepo, flat, etc.)
+3.  **Directory conventions**: Where source code, tests, configs live — "Your source appears to be in `src/`, tests in `tests/`. Correct?"
+4.  **Testing strategy** (if applicable): Detected test framework and approach — "I see Jest/pytest/etc. What types of tests does this project use?" If no test framework is detected, ask whether the user plans to have tests — don't assume.
+5.  **Verify commands** (if applicable): Only ask about commands that are relevant to the project. A Python script might have no build step; a prototype might have no tests. Only document commands that actually exist.
+
+If auto-detection finds nothing (empty or new project), ask the user directly. Keep the conversation concise — ask all questions in one message, not one at a time.
+
+**c) If user provided args** (e.g., `/sdd-init MVP-first, testable, no overdesign`): Incorporate them as the "General Principles" section in `project_rules.md`.
+
+### Step 3: Generate Configuration
+1.  Generate `context.json` from template, populated with the discovered values:
+    -   `tech_stack`: filled with detected/confirmed language, framework, tooling
+    -   `architecture_style`: filled with confirmed architecture style
+    -   `project_structure_convention`: filled with confirmed directory conventions
+    -   **JSON Writing Rule**: All string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk.
+2.  Generate `project_rules.md` tailored to the project:
+    -   **Coding Standards**: Based on detected language/framework conventions
+    -   **Architecture**: Based on confirmed architecture style and directory conventions
+    -   **Testing**: Based on detected test framework and confirmed strategy
+    -   **Verify Commands** (if any): Document whatever build/test/lint commands exist so `sdd-implementer` can run per-task verification. Omit this section entirely if the project has no such commands.
+    -   Start from the template in `templates/project_rules.md`, then fill in project-specific details
+
+### Step 4: Report
+Report: "Project initialized. Here's what I configured:" — show a summary of `tech_stack`, `architecture_style`, and key `project_rules.md` sections. Then: "Ready for `/sdd-request`."
 
 ## Feature Lifecycle
 

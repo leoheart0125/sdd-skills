@@ -20,9 +20,9 @@ This skill is the central nervous system of the SDD framework. It goes beyond si
 -   `/sdd-save` (Internal/Auto): Persist current `context.json` and generate `summary.md`.
 -   `/sdd-load`: Restore context from disk.
 -   `/sdd-learn`: Extract a "Lesson Learned" from the current conversation/incident.
-    -   *Usage*: `/sdd-learn "Avoid using FLOAT for currency, use DECIMAL instead"`
+    -   *Usage*: `/sdd-learn "<what went wrong and what to do instead>"`
 -   `/sdd-pattern-save`: Save a reusable pattern from the current design.
-    -   *Usage*: `/sdd-pattern-save "Standard JWT Auth Flow"`
+    -   *Usage*: `/sdd-pattern-save "<descriptive pattern name>"`
 -   `/sdd-rule-update`: Propose an update to `project_rules.md`.
 -   `/sdd-knowledge-reindex`: Rebuild `index.json` by scanning all pattern/lesson files (use only if index is corrupt or out of sync).
 
@@ -36,15 +36,15 @@ The index is a lightweight manifest of all patterns and lessons. **All other ski
 {
     "patterns": {
         "<pattern_id>": {
-            "tags": ["auth", "jwt", "api"],
+            "tags": ["<domain>", "<technology>", "<concept>"],
             "summary": "One-line description for quick relevance check",
             "file": "patterns/<pattern_id>.json"
         }
     },
     "lessons": {
         "<lesson_id>": {
-            "tags": ["auth", "api"],
-            "trigger": "designing-auth",
+            "tags": ["<domain>", "<concept>"],
+            "trigger": "<phase>-<domain>",
             "summary": "One-line description for quick relevance check",
             "file": "lessons/<lesson_id>.json"
         }
@@ -69,23 +69,23 @@ The index is a lightweight manifest of all patterns and lessons. **All other ski
 Reusable JSON templates for Architecture or Code. See `templates/pattern.json` for the canonical template.
 **JSON Writing Rule**: When generating any JSON artifact, all string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Verify JSON validity before writing to disk.
 
--   `id`: Unique ID (e.g., `auth-jwt-flow`)
--   `name`: Human-readable name (e.g., `"Standard JWT Auth Flow"`)
--   `tags`: Cross-feature retrieval tags (e.g., `["auth", "jwt", "api"]`)
+-   `id`: Unique ID — descriptive, kebab-case
+-   `name`: Human-readable name describing the pattern
+-   `tags`: Cross-feature retrieval tags — domain keywords, technologies, concepts
 -   `problem`: When to use this pattern — the problem it solves
 -   `solution`: The verified design/code approach
 -   `example`: Optional code snippet, reference, or implementation note
 
-**Tag-based retrieval**: When `sdd-task-planner` or `sdd-design-engine` searches for patterns, they match by tags rather than feature IDs. This enables patterns from a "user-auth" feature to be discoverable when building an "admin-auth" feature.
+**Tag-based retrieval**: When `sdd-task-planner` or `sdd-design-engine` searches for patterns, they match by tags rather than feature IDs. This enables patterns from one feature to be discoverable when building similar features in the same domain.
 
 ### 2. Lessons (`.sdd/knowledge/lessons/`)
 See `templates/lesson.json` for the canonical template.
 
--   `id`: Unique ID (e.g., `prisma-no-returning`)
--   `tags`: Cross-feature retrieval tags (e.g., `["prisma", "orm", "batch"]`)
--   `trigger`: When to recall this lesson — phase + domain (e.g., `"designing-auth"`, `"guard-check-code"`)
+-   `id`: Unique ID — descriptive, kebab-case
+-   `tags`: Cross-feature retrieval tags — domain keywords, technologies, concepts
+-   `trigger`: When to recall this lesson — `<phase>-<domain>` format (e.g., `"designing-<domain>"`, `"implementing-<domain>"`, `"guard-check-code"`)
 -   `context`: What happened — the gap between expectation and reality
--   `advice`: The specific guidance (e.g., `"Always add indexes to foreign keys"`)
+-   `advice`: The specific guidance — actionable and concrete
 
 ### 3. State (`.sdd/context/context.json`)
 The source of truth for the *current* project state.
@@ -96,10 +96,10 @@ The source of truth for the *current* project state.
     "architecture_style": "...",
     "project_structure_convention": "...",
     "current_stage": "design",
-    "current_feature": "user-auth",
-    "completed_features": ["health-monitoring"],
-    "active_patterns": ["auth-jwt-flow"],
-    "applied_lessons": ["db-index-fk"]
+    "current_feature": "<feature-id>",
+    "completed_features": ["<past-feature-1>"],
+    "active_patterns": ["<matched-pattern-id>"],
+    "applied_lessons": ["<applied-lesson-id>"]
 }
 ```
 
@@ -116,47 +116,17 @@ The source of truth for the *current* project state.
 -   Guardrail detects ambiguity or contradiction
 -   Architecture choice is rejected by user
 
-```json
-{
-    "id": "sso-requirement",
-    "tags": ["auth", "sso"],
-    "trigger": "designing-auth",
-    "context": "Agent assumed password-only login, but project requires SSO.",
-    "advice": "This project requires SSO support. Do not assume password-only login."
-}
-```
-
 #### Plan Phase — When plans are adjusted
 -   Task granularity adjusted by user (too coarse or too fine)
 -   Task order rearranged
 -   Conflict found between `project_rules` and generated plan
 
-```json
-{
-    "id": "task-granularity",
-    "tags": ["planning", "granularity"],
-    "trigger": "planning-tasks",
-    "context": "Generated tasks were too coarse, user split them further.",
-    "advice": "This project prefers one task per commit. Keep granularity at single-responsibility level."
-}
-```
-
 #### Implementation Phase — Two sub-triggers
 
 **a) During implementation (obstacles encountered):**
 -   Spec missing a field, triggering `/sdd-spec-update`
--   Framework behavior differs from expectation
--   Third-party API has undocumented limitations
-
-```json
-{
-    "id": "prisma-no-returning",
-    "tags": ["prisma", "orm", "batch"],
-    "trigger": "implementing-api-endpoint",
-    "context": "Prisma createMany was expected to return created records, but it does not.",
-    "advice": "Prisma createMany does not support returning. Use transaction + create instead."
-}
-```
+-   Framework or tool behavior differs from expectation
+-   Third-party service has undocumented limitations
 
 **b) After implementation (`/sdd-impl-finish`):**
 -   Read `.sdd/logs/session.md` for the full cross-session implementation history (this is the primary source for lesson extraction — without it, lessons from previous sessions are lost)
@@ -168,22 +138,12 @@ The source of truth for the *current* project state.
 
 Every guardrail fail → fix → pass cycle is a lesson.
 
-```json
-{
-    "id": "dto-match-openapi",
-    "tags": ["api", "dto", "openapi"],
-    "trigger": "guard-check-code",
-    "context": "Response DTO had extra wrapper fields not in the OpenAPI schema.",
-    "advice": "Response DTO must exactly match OpenAPI schema. Do not add extra wrappers."
-}
-```
-
 ### Recording Principles
 
 | Principle | Description |
 |---|---|
 | **Correction = Record** | Whenever agent output is rejected by user or guardrail and corrected, that's a lesson |
-| **Surprise = Record** | Unexpected behavior from frameworks, DB, or third-party services |
+| **Surprise = Record** | Unexpected behavior from frameworks, tools, platforms, or third-party services |
 | **Repetition = Upgrade** | If the same lesson triggers twice, promote it to a `project_rule` via `/sdd-rule-update` |
 | **Don't record smooth sailing** | When everything works as expected, no lesson is needed — avoid noise |
 
@@ -204,9 +164,9 @@ Classify each draft into one of three levels:
 
 | Level | Definition | Action |
 |-------|-----------|--------|
-| **Project-wide** | Applies to ALL features regardless of domain (e.g., "always use camelCase", "add indexes to FKs") | **Promote** to `project_rules.md` via `/sdd-rule-update`. Do NOT save as a lesson/pattern. |
-| **Domain-specific** | Applies to a category of features (e.g., "auth flows need refresh tokens", "CRUD endpoints need pagination") | **Save** as pattern/lesson with appropriate domain tags. |
-| **Feature-specific** | Applies only to this exact feature (e.g., "the user-auth table needs a `provider` column") | **Skip** — this is spec detail, not reusable knowledge. Archive naturally with the feature in `.sdd/features/`. |
+| **Project-wide** | Applies to ALL features regardless of domain (e.g., naming conventions, coding standards) | **Promote** to `project_rules.md` via `/sdd-rule-update`. Do NOT save as a lesson/pattern. |
+| **Domain-specific** | Applies to a category of features sharing a domain or technology | **Save** as pattern/lesson with appropriate domain tags. |
+| **Feature-specific** | Applies only to this exact feature and its specific implementation details | **Skip** — this is spec detail, not reusable knowledge. Archive naturally with the feature in `.sdd/features/`. |
 
 #### Step 3: Present triage results to user
 Show a summary table before saving:
@@ -214,10 +174,10 @@ Show a summary table before saving:
 ```
 | # | Type    | Title                        | Action           | Reason                          |
 |---|---------|------------------------------|------------------|---------------------------------|
-| 1 | Pattern | Form validation scaffold     | MERGE into P-003 | 80% overlap with existing       |
-| 2 | Lesson  | Always use camelCase naming   | PROMOTE to rules | Project-wide, not feature-bound |
-| 3 | Lesson  | Prisma no returning in batch  | SAVE (new)       | Domain-specific (Prisma + ORM)  |
-| 4 | Pattern | Auth token structure          | SKIP             | Feature-specific detail         |
+| 1 | Pattern | Reusable scaffold for X       | MERGE into P-003 | 80% overlap with existing       |
+| 2 | Lesson  | Project-wide naming rule      | PROMOTE to rules | Project-wide, not feature-bound |
+| 3 | Lesson  | Framework limitation in Y     | SAVE (new)       | Domain-specific, reusable       |
+| 4 | Pattern | Feature-specific config       | SKIP             | Feature-specific detail         |
 ```
 
 User confirms, edits, or overrides each action before execution.
