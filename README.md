@@ -2,12 +2,15 @@
 
 A next-generation Spec-Driven Development (SDD) framework designed for **Compounding Engineering**. It uses an **Agentic Orchestrator** pattern to manage the lifecycle, accumulating knowledge (patterns, templates, lessons) to make every future feature faster to build.
 
+**Domain-neutral by design** — works with any tech stack, architecture style, and project type (backend, frontend, CLI, DevOps, data pipelines, etc.). The framework adapts to your project, not the other way around.
+
 ## Core Philosophy
 
 1.  **Compounding**: Every feature built should make the next one faster via reusable patterns (tagged for cross-feature retrieval) and lessons learned.
 2.  **Frictionless**: Automate state management. No "commit" commands. The system saves as you go.
 3.  **Guardrails**: Continuous validation running *inside* every stage, not just as a final gate. Programmatic enforcement of `project_rules.md`.
 4.  **Clarity First**: Ambiguity Resolution Protocol ensures the agent asks questions before proceeding on assumptions.
+5.  **No Assumptions**: The framework never hardcodes architecture styles, languages, or conventions. All validation is driven by what the project declares in `project_rules.md`.
 
 ## Quick Start
 
@@ -38,7 +41,7 @@ Then, depending on your preferred AI agent, run the corresponding installation s
 ```bash
 /sdd-init product should be testable, high-quality and implement by MVP never overdesign
 ```
-Sets up the `.sdd/` directory structure (including `knowledge/patterns/`, `knowledge/lessons/`, `features/`) and default configuration. Optional args define the project's guiding principles in `project_rules.md`.
+Sets up the `.sdd/` directory structure and runs **Project Discovery** — auto-detects your tech stack from codebase markers (package.json, Cargo.toml, etc.), asks you to confirm architecture style and conventions, then generates a tailored `context.json` and `project_rules.md`. Optional args define the project's guiding principles.
 
 ### 3. Workflow
 
@@ -46,15 +49,15 @@ The **Orchestrator** (`AGENT.md`) routes commands to specialized sub-agents.
 
 **Phase 0: Request (Request Agent)**
 ```bash
-/sdd-request user authentication with social login
+/sdd-request <feature description>
 ```
-Acts as a **Product Manager** — discusses requirements interactively, asks clarifying questions, and produces a structured `request.md` with user stories, acceptance criteria, and scope. Auto-assigns a sequential feature ID (e.g., `001-user-auth`).
+Acts as a **Product Manager** — discusses requirements interactively, asks clarifying questions, and produces a structured `request.md` with user stories, acceptance criteria, and scope. Auto-assigns a sequential feature ID.
 
 **Phase 1: Design (Design Agent)**
 ```bash
 /sdd-design
 ```
-Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, object design, and defines interface contracts.
+Reads `request.md` and transforms it into technical specifications with **Ambiguity Resolution** (BLOCKING/WARNING/INFO concerns), generates architecture diagrams, design units (classes, components, modules, hooks — whatever fits the project), and defines interface contracts.
 
 **Phase 2: Plan (Plan Agent)**
 ```bash
@@ -121,7 +124,7 @@ All SDD artifacts are stored in the `.sdd/` directory. **Do not edit these manua
 │   ├── context.json      # State: tech_stack, current_feature, stage, feature_counter, patterns, lessons
 │   └── project_rules.md  # Architecture rules, coding standards, conventions (+ user-defined principles)
 ├── spec/                 # Feature-Scoped Specifications
-│   └── <feature-id>/    # request.md, requirements.json, architecture.json, + interface specs as needed
+│   └── <feature-id>/    # request.md, requirements.json, architecture.json, object_design.json, + interface specs as needed
 ├── plan/                 # Feature-Scoped Implementation Plans
 │   └── <feature-id>/    # tasks.json (with target_path per task)
 ├── features/             # Archived Snapshots (spec+plan per completed feature)
