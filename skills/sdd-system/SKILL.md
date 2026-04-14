@@ -55,9 +55,11 @@ Before generating config files, gather project context. This information is crit
 
 If auto-detection finds nothing (empty or new project), ask the user directly. Keep the conversation concise — ask all questions in one message, not one at a time.
 
-**c) If user provided args** (e.g., `/sdd-init MVP-first, testable, no overdesign`): Incorporate them as the "General Principles" section in `project_rules.md`.
+**CRITICAL INSTRUCTION: DO NOT PROCEED TO STEP 3 YET.** Stop your response here and wait for the user to answer your questions. Only proceed to Step 3 in your next response after the user has confirmed or adjusted the project discovery findings.
 
-### Step 3: Generate Configuration
+**c) If user provided args** (e.g., `/sdd-init MVP-first, testable, no overdesign`): Remember to incorporate them as the "General Principles" section in `project_rules.md` when you generate it later.
+
+### Step 3: Generate Configuration (Only AFTER User Confirmation)
 1.  Generate `context.json` from template, populated with the discovered values:
     -   `tech_stack`: filled with detected/confirmed language, framework, tooling
     -   `architecture_style`: filled with confirmed architecture style

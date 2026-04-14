@@ -2,9 +2,8 @@ description = "Initialize a new Compounding Engineering project. Optionally pass
 prompt = """Read and follow the sdd-system skill (skills/sdd-system/SKILL.md) initialization logic:
 1. Create .sdd/ directory structure (context/, spec/, plan/, features/, knowledge/, data/, logs/, temp/)
 2. Create knowledge/index.json as { "patterns": {}, "lessons": {} }
-3. Generate context.json from template (include feature_counter: "001")
-4. Generate project_rules.md template
-5. If user provided args, incorporate them as "General Principles" in project_rules.md
-6. Report ready for /sdd-request
+3. Perform Project Discovery (Step 2 in SKILL.md): Auto-detect tech stack, architecture, etc.
+4. **CRITICAL: ASK THE USER** questions to confirm the detected stack or define the project rules.
+5. **STOP AND WAIT**. Do NOT generate context.json or project_rules.md yet. Wait for the user to reply to your questions before proceeding to Step 3 of the SKILL.md initialization logic.
 
 User args: {{args}}"""
