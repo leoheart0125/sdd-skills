@@ -38,7 +38,7 @@ For feature lifecycle management.
 
 1.  **Receive Intent**: User provides a feature description via `/sdd-request`.
 2.  **Gather Context** (Index-Based — avoid loading all past request.md):
-    1.  Read `context.json` for `completed_features` (ID list only), `feature_counter`, `tech_stack`.
+    1.  Read `context.json` for `completed_features` (ID list only), `feature_counter`.
     2.  Query `knowledge/index.json` for entries with tag overlap to the feature description.
     3.  Load ONLY matched knowledge files. Do NOT scan full directories.
     4.  Only load a past `request.md` if a matched knowledge entry directly references it.

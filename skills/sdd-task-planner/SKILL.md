@@ -52,7 +52,7 @@ When `/sdd-plan` is called:
 ```
 
 ### Step 3: Analyze Feature Context
-1.  Read `context.json` — get `current_feature`, `architecture_style`, `project_structure_convention`.
+1.  Read `context.json` — get `current_feature`.
 2.  Read **all available** spec artifacts from `.sdd/spec/<feature-id>/`. The following may exist depending on the feature's design:
     -   `requirements.json` — functional/non-functional requirements and constraints.
     -   `architecture.json` — components, data flow, architectural decisions.

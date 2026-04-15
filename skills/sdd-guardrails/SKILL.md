@@ -33,7 +33,7 @@ Unlike a traditional review engine that acts as a blocker at the end of a proces
 
 ### 2. Plan Checks (Called by `sdd-task-planner`) — NEW
 -   **Path Convention Check**: Verify each task's `target_path` conforms to the architecture conventions declared in `project_rules.md`.
-    -   Read `architecture_style` and `project_structure_convention` from `context.json` and the Architecture section of `project_rules.md`
+    -   Read the Architecture section of `project_rules.md` to understand the declared directory structure and layer conventions
     -   Validate that all `target_path` values follow the declared convention
 -   **Rule Compliance Check**: Ensure task descriptions align with project rules (naming conventions, testing requirements, etc.)
 -   **Dependency Check**: Verify no circular dependencies in task graph
@@ -68,10 +68,9 @@ The Rule Compliance Engine is a **programmatic check**, not just a declaration. 
 #### Architecture Style Compliance
 
 The guardrail check procedure:
-1.  Read `context.json.architecture_style` and `context.json.project_structure_convention`.
-2.  Read `project_rules.md` Architecture section to understand the declared conventions.
-3.  For each task in `tasks.json`, validate `target_path` against the declared conventions.
-4.  For `architecture.json`, validate component grouping matches the declared style.
+1.  Read the Architecture section of `project_rules.md` to understand the declared conventions (directory structure, layer ordering, naming patterns).
+2.  For each task in `tasks.json`, validate `target_path` against the declared conventions.
+3.  For `architecture.json`, validate component grouping matches the declared style.
 
 The source of truth for what constitutes a valid path is always `project_rules.md` — not any hardcoded assumption about architecture style. Different projects use different grouping strategies (feature-first, layer-first, module-based, etc.), and the guardrail must validate against what the project actually declared.
 

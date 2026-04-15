@@ -44,7 +44,7 @@ When `/sdd-impl-start` is called:
     4.  Extract **Testing** requirements (unit test expectations, integration test scope).
     5.  These rules constrain ALL subsequent code generation. Every line of generated code MUST comply.
 2.  Check Task Type (e.g., "Create Endpoint").
-3.  **Check Context**: Read `.sdd/context/context.json` to determine Language, Framework, and `current_feature`.
+3.  **Check Context**: Read `.sdd/context/context.json` to get `current_feature`.
 4.  **Read Task**: Load from `.sdd/plan/<feature-id>/tasks.json` using the task ID.
 5.  **Read Design Spec (MANDATORY)**: Load **all available** spec artifacts from `.sdd/spec/<feature-id>/` and identify elements relevant to this task. The following may exist depending on the feature's design:
     -   `architecture.json` — component boundaries, layer structure, data flow direction (always present).

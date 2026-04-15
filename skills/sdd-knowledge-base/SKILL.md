@@ -92,9 +92,6 @@ The source of truth for the *current* project state.
 ```json
 {
     "project_name": "...",
-    "tech_stack": { ... },
-    "architecture_style": "...",
-    "project_structure_convention": "...",
     "current_stage": "design",
     "current_feature": "<feature-id>",
     "completed_features": ["<past-feature-1>"],

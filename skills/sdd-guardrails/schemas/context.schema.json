@@ -11,30 +11,6 @@
         "domain": {
             "type": "string"
         },
-        "tech_stack": {
-            "type": "object",
-            "properties": {
-                "language": {
-                    "type": "string"
-                },
-                "framework": {
-                    "type": "string"
-                },
-                "database": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "language"
-            ]
-        },
-        "architecture_style": {
-            "type": "string"
-        },
-        "project_structure_convention": {
-            "type": "string",
-            "description": "Directory structure conventions as declared in project_rules.md"
-        },
         "version": {
             "type": "string"
         },
@@ -93,7 +69,6 @@
     },
     "required": [
         "project_name",
-        "tech_stack",
         "current_stage"
     ]
 }

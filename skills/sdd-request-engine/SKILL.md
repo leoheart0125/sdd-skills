@@ -27,7 +27,7 @@ This skill acts as a **Product Manager** — it facilitates an interactive conve
 ### Step 1: Context Gathering (MANDATORY — Index-Based)
 
 Before starting the conversation, gather context efficiently:
-1.  Read `context.json` — get `completed_features` list (IDs only), `feature_counter`, `architecture_style`, `tech_stack`.
+1.  Read `context.json` — get `completed_features` list (IDs only), `feature_counter`.
 2.  Read `.sdd/knowledge/index.json` — filter entries whose `tags` overlap with the feature description keywords.
 3.  Load ONLY the matched knowledge files (via the `file` path in each index entry). Do NOT scan full directories.
 4.  Do NOT load all past `request.md` files — only load a specific one if a matched knowledge entry references it.

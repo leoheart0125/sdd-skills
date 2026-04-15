@@ -2,9 +2,7 @@
     "project_name": "{{ project_name }}",
     "description": "{{ description }}",
     "domain": "{{ domain }}",
-    "tech_stack": {},
-    "architecture_style": "{{ architecture_style }}",
-    "project_structure_convention": "{{ project_structure_convention }}",
+
     "version": "0.1.0",
     "current_stage": "init",
     "current_feature": null,

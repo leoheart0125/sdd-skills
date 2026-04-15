@@ -61,19 +61,17 @@ If auto-detection finds nothing (empty or new project), ask the user directly. K
 
 ### Step 3: Generate Configuration (Only AFTER User Confirmation)
 1.  Generate `context.json` from template, populated with the discovered values:
-    -   `tech_stack`: filled with detected/confirmed language, framework, tooling
-    -   `architecture_style`: filled with confirmed architecture style
-    -   `project_structure_convention`: filled with confirmed directory conventions
     -   **JSON Writing Rule**: All string values MUST have special characters properly escaped (`\"`, `\\`, `\n`, `\t`, control chars). Validate JSON is well-formed before writing to disk.
 2.  Generate `project_rules.md` tailored to the project:
+    -   **Tech Stack**: Fill the Tech Stack section with confirmed languages, frameworks, runtimes, databases, and tooling. For multi-stack projects, group by service/component (e.g., `frontend`, `backend`, `infra`). This is the **single source of truth** for tech stack — do NOT store in `context.json`.
+    -   **Architecture**: Based on confirmed architecture style and directory conventions — this is where the full architecture rules live; **do NOT duplicate in `context.json`**
     -   **Coding Standards**: Based on detected language/framework conventions
-    -   **Architecture**: Based on confirmed architecture style and directory conventions
     -   **Testing**: Based on detected test framework and confirmed strategy
     -   **Verify Commands** (if any): Document whatever build/test/lint commands exist so `sdd-implementer` can run per-task verification. Omit this section entirely if the project has no such commands.
     -   Start from the template in `templates/project_rules.md`, then fill in project-specific details
 
 ### Step 4: Report
-Report: "Project initialized. Here's what I configured:" — show a summary of `tech_stack`, `architecture_style`, and key `project_rules.md` sections. Then: "Ready for `/sdd-request`."
+Report: "Project initialized. Here's what I configured:" — show a summary of the **Tech Stack** section from `project_rules.md` and key sections (Architecture, Testing, Verify Commands). Then: "Ready for `/sdd-request`."
 
 ## Feature Lifecycle
 

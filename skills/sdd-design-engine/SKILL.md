@@ -82,7 +82,7 @@ After analyzing user intent or input artifacts, the agent assigns a **confidence
             "id": "C-003",
             "category": "INFO",
             "question": "Per project_rules.md, using declared architecture style.",
-            "context": "Matches architecture_style in context.json.",
+            "context": "Declared in the Architecture section of project_rules.md.",
             "answer": null,
             "resolved": false
         }
