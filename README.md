@@ -19,7 +19,7 @@ A next-generation Spec-Driven Development (SDD) framework designed for **Compoun
 First, add this repository as a submodule to your project:
 
 ```bash
-git submodule add https://github.com/pnetwork/sdd-skills.git
+git submodule add https://github.com/leoheart0125/sdd-skills.git
 ```
 
 Then, depending on your preferred AI agent, run the corresponding installation script from your project root:
