@@ -1,2 +1,2 @@
 description = "Remove the .sdd directory and reset the project state."
-prompt = "執行 SDD 刪除操作。請確認使用者意圖後，刪除 .sdd/ 目錄並重置專案狀態。"
+prompt = "Execute the SDD nuke operation. After confirming user intent, delete the .sdd/ directory and reset project state."

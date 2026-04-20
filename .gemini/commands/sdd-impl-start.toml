@@ -1,2 +1,2 @@
 description = "Start implementing tasks. No args = all pending; Task ID = specific task."
-prompt = "開始執行代碼實作任務。請調用 sdd-implement-agent 啟動任務。參數：{{args}}"
+prompt = "Start code implementation tasks. Please call sdd-implement-agent to start the tasks. Arguments: {{args}}"

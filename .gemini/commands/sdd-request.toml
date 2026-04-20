@@ -1,2 +1,2 @@
 description = "Start a feature request conversation. Acts as a PM to discuss requirements."
-prompt = "啟動需求引導流程。請調用 sdd-request-agent 並傳入使用者的初始描述：{{args}}"
+prompt = "Start the requirement elicitation process. Please call sdd-request-agent and pass the user's initial description: {{args}}"
