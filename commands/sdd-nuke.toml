@@ -1,8 +1,0 @@
-description = "Reset internal state but keep learned knowledge."
-prompt = """Read and follow the sdd-system skill (skills/sdd-system/SKILL.md) nuke logic:
-- Reset context.json (keep knowledge references)
-- Clear spec/ and plan/ directories
-- Preserve knowledge/ directory (patterns and lessons)
-- Confirm with user before proceeding (DESTRUCTIVE)
-
-Reason: {{args}}"""

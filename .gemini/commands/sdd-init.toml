@@ -1,0 +1,5 @@
+description = "Initialize a new SDD project. Optionally pass project principles."
+prompt = """啟動 SDD 專案初始化流程。
+1. 讀取並遵循 sdd-system 技能 (skills/sdd-system/SKILL.md)。
+2. 執行項目發現並建立基礎結構。
+使用者輸入：{{args}}"""

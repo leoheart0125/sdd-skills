@@ -1,8 +1,0 @@
-description = "Propose an update to project_rules.md."
-prompt = """Read and follow the sdd-knowledge-base skill (skills/sdd-knowledge-base/SKILL.md) rule evolution logic:
-1. Analyze the proposed rule
-2. Check for conflicts with existing rules in .sdd/context/project_rules.md
-3. Present the proposed change to user for confirmation
-4. If confirmed, append to project_rules.md under "Evolved Conventions"
-
-Proposed rule: {{args}}"""

@@ -1,0 +1,2 @@
+description = "Execute the design phase (Requirements -> Architecture -> Interfaces)."
+prompt = "執行 SDD 設計階段。請調用 sdd-design-agent 處理當前特徵。參數：{{args}}"

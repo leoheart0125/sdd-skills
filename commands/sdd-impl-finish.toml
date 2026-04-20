@@ -1,9 +1,0 @@
-description = "Mark task complete and enforce knowledge extraction."
-prompt = """Read and follow the sdd-implementer skill (skills/sdd-implementer/SKILL.md).
-
-Command: /sdd-impl-finish
-User args: {{args}}
-
-Before executing, read .sdd/context/context.json for current state.
-
-IMPORTANT: When reaching STATUS: KNOWLEDGE_TRIAGE, present the triage table to the user and wait for confirmation before continuing."""

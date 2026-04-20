@@ -1,0 +1,2 @@
+description = "Verify, extract knowledge, and archive the current feature."
+prompt = "完成當前特徵實作。請調用 sdd-implement-agent 執行 /sdd-impl-finish 工作流，包括驗證與知識提取。"

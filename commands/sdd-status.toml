@@ -1,7 +1,0 @@
-description = "Display current project health and active stage."
-prompt = """Read .sdd/context/context.json and display:
-- Active Feature (current_feature or "None")
-- Current Stage (current_stage)
-- Completed Features count
-- Knowledge Stats (count patterns and lessons in knowledge/index.json)
-- Active Patterns and Applied Lessons"""

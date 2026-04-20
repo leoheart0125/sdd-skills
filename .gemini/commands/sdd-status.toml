@@ -1,0 +1,2 @@
+description = "Show current SDD project status and active feature."
+prompt = "讀取 .sdd/context.json 並顯示當前項目的狀態摘要、活動特徵與進度。"

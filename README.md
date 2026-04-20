@@ -16,24 +16,21 @@ A next-generation Spec-Driven Development (SDD) framework designed for **Compoun
 
 ### 1. Installation
 
-First, add this repository as a submodule to your project:
+You can install SDD skills using the provided `install.sh` script.
 
+**Using curl (recommended for quick setup):**
+```bash
+# Install locally to your project root
+curl -sSL https://raw.githubusercontent.com/leoheart0125/sdd-skills/main/install.sh | bash -s -- --agent gemini --local
+
+# Install globally to your home directory
+curl -sSL https://raw.githubusercontent.com/leoheart0125/sdd-skills/main/install.sh | bash -s -- --agent claude --global
+```
+
+**Using git submodule:**
 ```bash
 git submodule add https://github.com/leoheart0125/sdd-skills.git
-```
-
-Then, depending on your preferred AI agent, run the corresponding installation script from your project root:
-
-**For Claude Code (recommended):**
-
-```bash
-./sdd-skills/install.sh --agent claude
-```
-
-**For Gemini:**
-
-```bash
-./sdd-skills/install.sh --agent gemini
+./sdd-skills/install.sh --agent gemini --local
 ```
 
 ### 2. Initialization
@@ -45,7 +42,7 @@ Sets up the `.sdd/` directory structure and runs **Project Discovery** — auto-
 
 ### 3. Workflow
 
-The **Orchestrator** (`AGENT.md`) routes commands to specialized sub-agents.
+The **Orchestrator** (`GEMINI.md` or `CLAUDE.md`) routes commands to specialized sub-agents.
 
 **Phase 0: Request (Request Agent)**
 ```bash
@@ -88,20 +85,25 @@ This project ships commands in two formats:
 | Format | Location | For |
 |--------|----------|-----|
 | **Claude Code** (`.md`) | `.claude/commands/` | Claude Code CLI — slash commands like `/sdd-init` |
-| **TOML** (`.toml`) | `commands/` | Other AI agents (Gemini CLI, etc.) |
+| **TOML** (`.toml`) | `.gemini/commands/` | Other AI agents (Gemini CLI, etc.) |
 
 ## System Components
 
 ### Orchestrator
-- **`AGENT.md`**: The central brain that routes commands, manages state, and delegates to specialized agents.
+- **`GEMINI.md`**: The central brain for Gemini CLI.
+- **`CLAUDE.md`**: The central brain for Claude Code.
 
 ### Agents
-| Agent | Role | Description |
-|-------|------|-------------|
-| [`agents/request-agent.md`](./agents/request-agent.md) | **Product Manager** | Facilitates requirement discussions and produces structured `request.md` specs using `sdd-request-engine`. |
-| [`agents/design-agent.md`](./agents/design-agent.md) | **Architect** | Handles requirements analysis, architecture design, and interface & contract specification using `sdd-design-engine`. |
-| [`agents/plan-agent.md`](./agents/plan-agent.md) | **Planner** | Converts specs into actionable tasks using `sdd-task-planner`. |
-| [`agents/implement-agent.md`](./agents/implement-agent.md) | **Builder** | Executes tasks, writes code, and runs tests using `sdd-implementer` and `sdd-guardrails`. |
+| Agent | Role | Target | Location |
+|-------|------|--------|----------|
+| **Request Agent** | **Product Manager** | Claude | [`.claude/agents/request-agent.md`](./.claude/agents/request-agent.md) |
+| **Design Agent** | **Architect** | Claude | [`.claude/agents/design-agent.md`](./.claude/agents/design-agent.md) |
+| **Plan Agent** | **Planner** | Claude | [`.claude/agents/plan-agent.md`](./.claude/agents/plan-agent.md) |
+| **Implement Agent** | **Builder** | Claude | [`.claude/agents/implement-agent.md`](./.claude/agents/implement-agent.md) |
+| **sdd-request-agent** | **Product Manager** | Gemini | [`.gemini/agents/sdd-request-agent.md`](./.gemini/agents/sdd-request-agent.md) |
+| **sdd-design-agent** | **Architect** | Gemini | [`.gemini/agents/sdd-design-agent.md`](./.gemini/agents/sdd-design-agent.md) |
+| **sdd-plan-agent** | **Planner** | Gemini | [`.gemini/agents/sdd-plan-agent.md`](./.gemini/agents/sdd-plan-agent.md) |
+| **sdd-implement-agent** | **Builder** | Gemini | [`.gemini/agents/sdd-implement-agent.md`](./.gemini/agents/sdd-implement-agent.md) |
 
 ### Skills
 | Skill | Role | Description |
