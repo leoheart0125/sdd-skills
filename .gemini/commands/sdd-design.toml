@@ -1,0 +1,2 @@
+description = "Execute the design phase (Requirements -> Architecture -> Interfaces)."
+prompt = "Execute the SDD design phase. Please call sdd-design-agent to handle the current feature. Arguments: {{args}}"

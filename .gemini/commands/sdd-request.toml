@@ -1,0 +1,2 @@
+description = "Start a feature request conversation. Acts as a PM to discuss requirements."
+prompt = "Start the requirement elicitation process. Please call sdd-request-agent and pass the user's initial description: {{args}}"

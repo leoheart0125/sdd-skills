@@ -1,0 +1,2 @@
+description = "Show current SDD project status and active feature."
+prompt = "Read .sdd/context.json and display a status summary, active features, and progress of the current project."

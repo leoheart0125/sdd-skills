@@ -1,0 +1,2 @@
+description = "Generate or update the implementation plan."
+prompt = "Generate or update the implementation plan. Please call sdd-plan-agent to handle the current feature. Arguments: {{args}}"

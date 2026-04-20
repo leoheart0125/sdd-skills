@@ -3,85 +3,111 @@
 # Stop execution immediately on error
 set -e
 
-# Get the directory where this script is located (i.e., the sdd-skills submodule directory)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Default values
+AGENT="both"
+INSTALL_TYPE="local"
+REPO_URL="https://github.com/leoheart0125/sdd-skills"
+REPO_BRANCH="main"
 
-# Default target directory is the current working directory where the script is executed
-TARGET_DIR="$(pwd)"
-
-# Check if executed inside the submodule directory, remind user to run at repo root
-if [ "$SCRIPT_DIR" = "$TARGET_DIR" ]; then
-    echo "⚠️ WARNING: You are currently running this script inside the sdd-skills directory."
-    echo "Please run this script from your project root (repo root)."
-    echo "Example: ./sdd-skills/install.sh --agent claude"
-    exit 1
+# Detect if script is run via curl or locally
+if [ -z "${BASH_SOURCE[0]}" ]; then
+    echo "🌐 Running via curl. Fetching source from GitHub..."
+    TMP_DIR=$(mktemp -d)
+    curl -sL "$REPO_URL/archive/refs/heads/$REPO_BRANCH.tar.gz" | tar xz -C "$TMP_DIR" --strip-components=1
+    SCRIPT_DIR="$TMP_DIR"
+    TRAP_CLEANUP="true"
+else
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    TRAP_CLEANUP="false"
 fi
 
-AGENT=""
+cleanup() {
+    if [ "$TRAP_CLEANUP" == "true" ]; then
+        rm -rf "$TMP_DIR"
+    fi
+}
+trap cleanup EXIT
 
 # Parse arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --agent) AGENT="$2"; shift ;;
-        *) echo "Unknown parameter: $1"; exit 1 ;;
+        --agent) 
+            if [[ -n "$2" && ! "$2" == --* ]]; then
+                AGENT="$2"
+                shift
+            else
+                echo "❌ Error: --agent requires a value (claude, gemini, or both)"
+                exit 1
+            fi
+            ;;
+        --global) INSTALL_TYPE="global" ;;
+        --local) INSTALL_TYPE="local" ;;
+        -h|--help)
+            echo "Usage: install.sh [--agent claude|gemini|both] [--global|--local]"
+            exit 0
+            ;;
+        *) echo "❌ Unknown parameter: $1"; exit 1 ;;
     esac
     shift
 done
 
-# Check if agent parameter is valid
-if [[ "$AGENT" != "gemini" && "$AGENT" != "claude" ]]; then
-    echo "Usage: $0 --agent [gemini|claude]"
+# Validate AGENT
+if [[ "$AGENT" != "claude" && "$AGENT" != "gemini" && "$AGENT" != "both" ]]; then
+    echo "❌ Error: Invalid agent type '$AGENT'. Must be 'claude', 'gemini', or 'both'."
     exit 1
 fi
 
-echo "🚀 Starting SDD Skills installation (Target Agent: $AGENT)..."
-
-if [[ "$AGENT" == "claude" ]]; then
-    # Detect and create .claude folder
-    if [ ! -d "$TARGET_DIR/.claude" ]; then
-        echo "📁 Creating .claude directory..."
-        mkdir -p "$TARGET_DIR/.claude"
-    fi
-
-    # Copy .claude/commands/* to repo's .claude/commands/
-    echo "📦 Copying commands..."
-    mkdir -p "$TARGET_DIR/.claude/commands"
-    cp -R "$SCRIPT_DIR/.claude/commands/"* "$TARGET_DIR/.claude/commands/"
-
-    # Copy agents/ to repo's .claude/agents/
-    echo "🤖 Copying agents..."
-    mkdir -p "$TARGET_DIR/.claude/agents"
-    cp -R "$SCRIPT_DIR/agents/"* "$TARGET_DIR/.claude/agents/"
-
-    # Copy skills/ to repo's .claude/skills/
-    echo "🛠️ Copying skills..."
-    mkdir -p "$TARGET_DIR/.claude/skills"
-    cp -R "$SCRIPT_DIR/skills/"* "$TARGET_DIR/.claude/skills/"
-
-    # Copy AGENT.md to repo root
-    echo "📄 Copying AGENT.md to project root..."
-    cp "$SCRIPT_DIR/AGENT.md" "$TARGET_DIR/AGENT.md"
-    
-    echo "✅ Claude Code installation complete!"
-
-elif [[ "$AGENT" == "gemini" ]]; then
-    # Detect and create .gemini folder
-    if [ ! -d "$TARGET_DIR/.gemini" ]; then
-        echo "📁 Creating .gemini directory..."
-        mkdir -p "$TARGET_DIR/.gemini"
-    fi
-
-    # Gemini does not need agent, AGENT.md, commands use the outer ones
-    echo "📦 Copying commands..."
-    mkdir -p "$TARGET_DIR/.gemini/commands"
-    # Use the outer commands folder
-    cp -R "$SCRIPT_DIR/commands/"* "$TARGET_DIR/.gemini/commands/"
-
-    # Copy skills/ to repo's .gemini/skills/ 
-    # (skills similarly)
-    echo "🛠️ Copying skills..."
-    mkdir -p "$TARGET_DIR/.gemini/skills"
-    cp -R "$SCRIPT_DIR/skills/"* "$TARGET_DIR/.gemini/skills/"
-
-    echo "✅ Gemini installation complete!"
+TARGET_DIR="$(pwd)"
+if [ "$INSTALL_TYPE" == "global" ]; then
+    TARGET_DIR="$HOME"
 fi
+
+echo "🚀 Starting SDD Skills installation (Target: $INSTALL_TYPE, Agent: $AGENT)..."
+
+# Function to install Claude resources
+install_claude() {
+    local dest="$TARGET_DIR/.claude"
+    echo "📁 Preparing .claude directory at $dest..."
+    mkdir -p "$dest/commands" "$dest/agents" "$dest/skills"
+
+    echo "📦 Copying Claude resources..."
+    cp -R "$SCRIPT_DIR/.claude/commands/"* "$dest/commands/"
+    cp -R "$SCRIPT_DIR/.claude/agents/"* "$dest/agents/"
+    cp -R "$SCRIPT_DIR/skills/"* "$dest/skills/"
+
+    if [ "$INSTALL_TYPE" == "local" ]; then
+        if [ -f "$SCRIPT_DIR/.claude/CLAUDE.md" ]; then
+            echo "📄 Copying CLAUDE.md to project root..."
+            cp "$SCRIPT_DIR/.claude/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
+        fi
+    fi
+}
+
+# Function to install Gemini resources
+install_gemini() {
+    local dest="$TARGET_DIR/.gemini"
+    echo "📁 Preparing .gemini directory at $dest..."
+    mkdir -p "$dest/commands" "$dest/agents" "$dest/skills"
+
+    echo "📦 Copying Gemini resources..."
+    cp -R "$SCRIPT_DIR/.gemini/commands/"* "$dest/commands/"
+    cp -R "$SCRIPT_DIR/.gemini/agents/"* "$dest/agents/"
+    cp -R "$SCRIPT_DIR/skills/"* "$dest/skills/"
+
+    if [ "$INSTALL_TYPE" == "local" ]; then
+        if [ -f "$SCRIPT_DIR/.gemini/GEMINI.md" ]; then
+            echo "📄 Copying GEMINI.md to project root..."
+            cp "$SCRIPT_DIR/.gemini/GEMINI.md" "$TARGET_DIR/GEMINI.md"
+        fi
+    fi
+}
+
+if [[ "$AGENT" == "claude" || "$AGENT" == "both" ]]; then
+    install_claude
+fi
+
+if [[ "$AGENT" == "gemini" || "$AGENT" == "both" ]]; then
+    install_gemini
+fi
+
+echo "✅ Installation complete!"

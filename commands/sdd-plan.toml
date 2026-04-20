@@ -1,7 +1,0 @@
-description = "Generate or update the implementation plan."
-prompt = """Read and follow the sdd-task-planner skill (skills/sdd-task-planner/SKILL.md).
-
-Command: /sdd-plan
-User args: {{args}}
-
-Before executing, read .sdd/context/context.json for current state. Use the spec directory path and all context when executing the plan skill."""

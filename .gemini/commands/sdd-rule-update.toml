@@ -1,0 +1,2 @@
+description = "Update project-wide rules and coding standards."
+prompt = "Update project rules. Please open .sdd/context/project_rules.md and make modifications based on user requirements. Arguments: {{args}}"

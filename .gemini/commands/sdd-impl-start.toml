@@ -1,0 +1,2 @@
+description = "Start implementing tasks. No args = all pending; Task ID = specific task."
+prompt = "Start code implementation tasks. Please call sdd-implement-agent to start the tasks. Arguments: {{args}}"

@@ -1,0 +1,2 @@
+description = "Verify, extract knowledge, and archive the current feature."
+prompt = "Complete the current feature implementation. Please call sdd-implement-agent to execute the /sdd-impl-finish workflow, including verification and knowledge extraction."

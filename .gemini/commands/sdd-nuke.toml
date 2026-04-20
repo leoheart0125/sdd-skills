@@ -1,0 +1,2 @@
+description = "Remove the .sdd directory and reset the project state."
+prompt = "Execute the SDD nuke operation. After confirming user intent, delete the .sdd/ directory and reset project state."
